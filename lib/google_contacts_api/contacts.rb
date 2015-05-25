@@ -14,7 +14,7 @@ module GoogleContactsApi
       params["max-results"] = 100000 unless params.key?("max-results")
       url = "contacts/default/full"
       response = @api.get(url, params)
-      
+      puts "Contacts response code: #{GoogleContactsApi::Api.parse_response_code(response)}"
       # TODO: Define some fancy exceptions
       case GoogleContactsApi::Api.parse_response_code(response)
       when 401; raise

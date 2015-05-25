@@ -22,7 +22,7 @@ module GoogleContactsApi
     # Raise UnauthorizedError if not authorized.
     def get(link, params = {}, headers = {})
       merged_params = params_with_defaults(params)
-      p "params: #{params}.inspect"
+      p "params: #{params.inspect}"
       begin
         result = @oauth.get("#{BASE_URL}#{link}?#{merged_params.to_query}", headers)
       rescue => e
