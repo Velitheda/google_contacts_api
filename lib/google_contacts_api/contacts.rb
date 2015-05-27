@@ -23,6 +23,8 @@ module GoogleContactsApi
       when 400...500; raise
       when 500...600; raise
       end
+      p "nothing raised"
+      # GoogleContactsApi::XmlResultSet.new(response_body, @api)
       GoogleContactsApi::ContactSet.new(response.body, @api)
     end
   end

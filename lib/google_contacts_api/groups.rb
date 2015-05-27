@@ -23,5 +23,12 @@ module GoogleContactsApi
       end
       GoogleContactsApi::GroupSet.new(response.body, @api)
     end
+
+    def update_groups(params = {})
+      params = params.with_indifferent_access
+      url = "groups/default/full"
+      response = @api.put(url, params)
+      puts GoogleContactsApi::Api.parse_response_code(response)
+    end
   end
 end

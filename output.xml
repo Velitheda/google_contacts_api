@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed gd:etag="&quot;RnY_fDVSLyt7I2A9XRVRFUQKTg0.&quot;" xmlns="http://www.w3.org/2005/Atom" xmlns:batch="http://schemas.google.com/gdata/batch" xmlns:gContact="http://schemas.google.com/contact/2008" xmlns:gd="http://schemas.google.com/g/2005" xmlns:openSearch="http://a9.com/-/spec/opensearch/1.1/">
+ <id>thechestnutvixen@gmail.com</id>
+ <updated>2015-05-25T21:56:37.844Z</updated>
+ <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/contact/2008#contact"/>
+ <title>Jade Winter's Contacts</title>
+ <link rel="alternate" type="text/html" href="https://www.google.com/"/>
+ <link rel="http://schemas.google.com/g/2005#feed" type="application/atom+xml" href="https://www.google.com/m8/feeds/contacts/thechestnutvixen%40gmail.com/full?v=3"/>
+ <link rel="http://schemas.google.com/g/2005#post" type="application/atom+xml" href="https://www.google.com/m8/feeds/contacts/thechestnutvixen%40gmail.com/full?v=3"/>
+ <link rel="http://schemas.google.com/g/2005#batch" type="application/atom+xml" href="https://www.google.com/m8/feeds/contacts/thechestnutvixen%40gmail.com/full/batch?v=3"/>
+ <link rel="self" type="application/atom+xml" href="https://www.google.com/m8/feeds/contacts/thechestnutvixen%40gmail.com/full?max-results=2&amp;v=3"/>
+ <author>
+  <name>Jade Winter</name>
+  <email>thechestnutvixen@gmail.com</email>
+ </author>
+ <generator version="1.0" uri="http://www.google.com/m8/feeds">Contacts</generator>
+ <openSearch:totalResults>2</openSearch:totalResults>
+ <openSearch:startIndex>1</openSearch:startIndex>
+ <openSearch:itemsPerPage>2</openSearch:itemsPerPage>
+ <entry gd:etag="&quot;Rno_fTVSLyt7I2A9XRVRFU8MQAI.&quot;">
+  <id>http://www.google.com/m8/feeds/contacts/thechestnutvixen%40gmail.com/base/2b6f1aad0b946448</id>
+  <updated>2015-05-25T04:06:07.445Z</updated>
+  <app:edited xmlns:app="http://www.w3.org/2007/app">2015-05-25T04:06:07.445Z</app:edited>
+  <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/contact/2008#contact"/>
+  <title>Mr. Fox</title>
+  <link rel="http://schemas.google.com/contacts/2008/rel#photo" type="image/*" href="https://www.google.com/m8/feeds/photos/media/thechestnutvixen%40gmail.com/2b6f1aad0b946448?v=3"/>
+  <link rel="self" type="application/atom+xml" href="https://www.google.com/m8/feeds/contacts/thechestnutvixen%40gmail.com/full/2b6f1aad0b946448?v=3"/>
+  <link rel="edit" type="application/atom+xml" href="https://www.google.com/m8/feeds/contacts/thechestnutvixen%40gmail.com/full/2b6f1aad0b946448?v=3"/>
+  <gd:name>
+   <gd:fullName>Mr. Fox</gd:fullName>
+   <gd:namePrefix>Mr.</gd:namePrefix>
+   <gd:familyName>Fox</gd:familyName>
+  </gd:name>
+  <gContact:groupMembershipInfo deleted="false" href="http://www.google.com/m8/feeds/groups/thechestnutvixen%40gmail.com/base/6"/>
+ </entry>
+ <entry gd:etag="&quot;SH0_ejVSLSt7I2A9XRVRFUQKQw0.&quot;">
+  <id>http://www.google.com/m8/feeds/contacts/thechestnutvixen%40gmail.com/base/405dda4d8c665e0d</id>
+  <updated>2015-05-25T21:48:19.342Z</updated>
+  <app:edited xmlns:app="http://www.w3.org/2007/app">2015-05-25T21:48:19.342Z</app:edited>
+  <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/contact/2008#contact"/>
+  <title>The Scarlett T. Vixen ness</title>
+  <content>Note this!</content>
+  <link rel="http://schemas.google.com/contacts/2008/rel#photo" type="image/*" href="https://www.google.com/m8/feeds/photos/media/thechestnutvixen%40gmail.com/405dda4d8c665e0d?v=3" gd:etag="&quot;eXFVbnsdfCt7I2A-IX4kchNbAhkGOVojZDs.&quot;"/>
+  <link rel="self" type="application/atom+xml" href="https://www.google.com/m8/feeds/contacts/thechestnutvixen%40gmail.com/full/405dda4d8c665e0d?v=3"/>
+  <link rel="edit" type="application/atom+xml" href="https://www.google.com/m8/feeds/contacts/thechestnutvixen%40gmail.com/full/405dda4d8c665e0d?v=3"/>
+  <gd:name>
+   <gd:fullName>The Scarlett T. Vixen ness</gd:fullName>
+   <gd:namePrefix>The</gd:namePrefix>
+   <gd:givenName yomi="Phonetic last">Scarlett</gd:givenName>
+   <gd:additionalName>T.</gd:additionalName>
+   <gd:familyName yomi="Phonetic first">Vixen</gd:familyName>
+   <gd:nameSuffix>ness</gd:nameSuffix>
+  </gd:name>
+  <gContact:nickname>Scar</gContact:nickname>
+  <gContact:birthday when="2003-01-02"/>
+  <gContact:fileAs>Name used for sorting</gContact:fileAs>
+  <gd:organization rel="http://schemas.google.com/g/2005#other">
+   <gd:orgName>Fox den</gd:orgName>
+   <gd:orgTitle>Hunteress</gd:orgTitle>
+  </gd:organization>
+  <gd:email rel="http://schemas.google.com/g/2005#home" address="thescarlettvixen@example.com" primary="true"/>
+  <gd:email rel="http://schemas.google.com/g/2005#work" address="workemail@example.com"/>
+  <gd:im address="Google talk" protocol="http://schemas.google.com/g/2005#GOOGLE_TALK" rel="http://schemas.google.com/g/2005#other"/>
+  <gd:im address="AIM" protocol="http://schemas.google.com/g/2005#AIM" rel="http://schemas.google.com/g/2005#other"/>
+  <gd:phoneNumber rel="http://schemas.google.com/g/2005#mobile">1234567890987654321</gd:phoneNumber>
+  <gd:phoneNumber rel="http://schemas.google.com/g/2005#work">23456765</gd:phoneNumber>
+  <gd:phoneNumber rel="http://schemas.google.com/g/2005#home">HomePhone</gd:phoneNumber>
+  <gd:structuredPostalAddress rel="http://schemas.google.com/g/2005#home">
+   <gd:formattedAddress>The den</gd:formattedAddress>
+   <gd:street>The den</gd:street>
+  </gd:structuredPostalAddress>
+  <gd:structuredPostalAddress rel="http://schemas.google.com/g/2005#work">
+   <gd:formattedAddress>The field</gd:formattedAddress>
+   <gd:street>The field</gd:street>
+  </gd:structuredPostalAddress>
+  <gd:structuredPostalAddress label="Custom">
+   <gd:formattedAddress>By the lake</gd:formattedAddress>
+   <gd:street>By the lake</gd:street>
+  </gd:structuredPostalAddress>
+  <gContact:event rel="anniversary">
+   <gd:when startTime="2005-03-04"/>
+  </gContact:event>
+  <gContact:event label="Custom">
+   <gd:when startTime="2007-05-06"/>
+  </gContact:event>
+  <gContact:relation rel="friend">Good friend</gContact:relation>
+  <gContact:relation rel="spouse">Someone else</gContact:relation>
+  <gContact:userDefinedField key="Custom" value="Custom field"/>
+  <gContact:userDefinedField key="" value="Another custom field"/>
+  <gContact:website href="aroiadiriujaaurbfkausyegkuy.com" rel="profile"/>
+  <gContact:groupMembershipInfo deleted="false" href="http://www.google.com/m8/feeds/groups/thechestnutvixen%40gmail.com/base/6"/>
+ </entry>
+</feed>
