@@ -67,8 +67,8 @@ module GoogleContactsApi
       numbers = phone_numbers
       @mobile_number = ""
       numbers.each do |number|
-        if number["mobile"]
-          @mobile_number = number["mobile"]
+        if number["type"].eql?("mobile")
+          @mobile_number = number["value"]
         end
       end
       @mobile_number
@@ -78,8 +78,8 @@ module GoogleContactsApi
       numbers = phone_numbers
       @phone_number = ""
       numbers.each do |number|
-        unless number["mobile"]
-          @phone_number = number.values.first
+        unless number["type"].eql?("mobile")
+          @phone_number = number["value"]
           return @phone_number
         end
       end
@@ -119,6 +119,9 @@ module GoogleContactsApi
     end
     def name_suffix
       @name_suffix = nodeValue("nameSuffix")
+    end
+    def nickname
+      @nickname = nodeValue("nickname")
     end
 
     def organization

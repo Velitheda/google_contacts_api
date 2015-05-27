@@ -28,6 +28,7 @@ module GoogleContactsApi
         p "mobile: #{contact.mobile_number}"
         p "phone: #{contact.phone_number}"
         p "website: #{contact.website}"
+        p "nickname: #{contact.nickname}"
       end
       @results
     end
