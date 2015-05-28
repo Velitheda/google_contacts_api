@@ -7,7 +7,7 @@ module GoogleContactsApi
   class Contact < GoogleContactsApi::Result
     # Returns the array of links, as link is an array for Hashie.
     def links
-      @links = nodeAttribute("link", "href")
+      @links = node_attribute("link", "href")
     end
 
     # Returns link to get this contact
@@ -105,37 +105,37 @@ module GoogleContactsApi
     end
 
     def given_name
-      @first_name = nodeValue("givenName")
+      @first_name = node_value("givenName")
     end
     def family_name
-      @family_name = nodeValue("familyName")
+      @family_name = node_value("familyName")
     end
     def full_name
-      @full_name = nodeValue("fullName")
+      @full_name = node_value("fullName")
     end
     def additional_name
-      @additional_name = nodeValue("additionalName")
+      @additional_name = node_value("additionalName")
     end
     def name_prefix
-      @name_prefix = nodeValue("namePrefix")
+      @name_prefix = node_value("namePrefix")
     end
     def name_suffix
-      @name_suffix = nodeValue("nameSuffix")
+      @name_suffix = node_value("nameSuffix")
     end
     def nickname
-      @nickname = nodeValue("nickname")
+      @nickname = node_value("nickname")
     end
 
     def organization
-      @organization = nodeValue("orgName")
+      @organization = node_value("orgName")
     end
 
     def job_title
-      @job_title = nodeValue("orgTitle")
+      @job_title = node_value("orgTitle")
     end
 
     def relations
-      @relations = nodeValue("relation")
+      @relations = node_value("relation")
     end
 
     # Returns the spouse of the contact. (Assumes there's only one.)
@@ -145,8 +145,8 @@ module GoogleContactsApi
 
     def website
       @website = {}
-      site_type = nodeAttribute("website", "rel").text
-      site = nodeAttribute("website", "href").text
+      site_type = node_attribute("website", "rel").text
+      site = node_attribute("website", "href").text
       @website["type"] = site_type
       @website["value"] = site
     end

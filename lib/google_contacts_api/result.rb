@@ -19,12 +19,12 @@ module GoogleContactsApi
       # p "etag: #{etag}"
     end
 
-    def nodeValue(string)
-       @node.xpath(".//#{string}").text
+    def node_value(string)
+      @node.xpath(".//#{string}").text
     end
 
-    def nodeAttribute(string, attributeName)
-       @node.xpath(".//#{string}/@#{attributeName}")
+    def node_attribute(string, attributeName)
+      @node.xpath(".//#{string}/@#{attributeName}")
     end
 
     def value_array(string, value_string)
@@ -90,27 +90,27 @@ module GoogleContactsApi
     end
 
     def id
-      @id = nodeValue("id")
+      @id = node_value("id")
     end
 
     # For Contacts, returns the (full) name.
     # For Groups, returns the name of the group.
     def title
-      @title = nodeValue("title")
+      @title = node_value("title")
     end
 
     def content
-      @content = nodeValue("content")
+      @content = node_value("content")
     end
 
     def updated
-      @updated = nodeValue("updated")
+      @updated = node_value("updated")
     end
 
     # Returns the array of categories, as category is an array for Hashie.
     # There is a scheme and a term.
     def categories
-      @categories = nodeAttribute("category", "term")
+      @categories = node_attribute("category", "term")
     end
 
     def deleted?

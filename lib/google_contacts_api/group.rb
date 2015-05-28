@@ -6,7 +6,7 @@ module GoogleContactsApi
 
     # Return true if this is a system group.
     def system_group?
-      !nodeValue("systemGroup").nil?
+      !node_value("systemGroup").nil?
     end
 
     # Return the contacts in this group and cache them.
@@ -24,7 +24,7 @@ module GoogleContactsApi
 
     # Returns the array of links, as link is an array for Hashie.
     def links
-      @links = nodeAttribute("link", "href")
+      @links = node_attribute("link", "href")
     end
 
     def self_link
