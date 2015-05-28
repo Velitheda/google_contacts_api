@@ -1,6 +1,7 @@
 module GoogleContactsApi
   # Represents a single group.
   require 'google_contacts_api/contacts'
+  require 'google_contacts_api/contact_set'
   class Group < GoogleContactsApi::Result
     include GoogleContactsApi::Contacts
 
@@ -13,6 +14,15 @@ module GoogleContactsApi
     def contacts(params = {})
       # contacts in this group
       @contacts ||= get_contacts({"group" => id}.merge(params))
+      p @contacts.results.length
+      @contact_count = @contacts.results.length
+      @contacts
+    end
+
+    def contact_count
+      # @contacts ||= get_contacts({"group" => id}.merge(params))
+      # # p @contacts.results.length
+      @contact_count = @contacts.results.length || 0
     end
 
     # Return the contacts in this group, retrieving them again from the server.
@@ -36,7 +46,11 @@ module GoogleContactsApi
     end
 
     def group_name
-      @group_name = title
+      if system_group?
+        @group_name = node_attribute("systemGroup", "id")
+      else
+        @group_name = title
+      end
     end
 
     def as_json(options={})

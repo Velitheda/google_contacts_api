@@ -19,54 +19,46 @@ module GoogleContactsApi
       # p "etag: #{etag}"
     end
 
+# node value text
     def node_value(string)
       @node.xpath(".//#{string}").text
     end
 
-    def node_attribute(string, attributeName)
-      @node.xpath(".//#{string}/@#{attributeName}")
+# def node value
+    def node_attribute(string, attribute_name)
+      @node.xpath(".//#{string}/@#{attribute_name}")
     end
 
+    def attribute(attribute_string)
+      object.xpath("./@#{attribute_string}").text
+    end
+
+    def types_and_values(string, xpath_string)
+      array = []
+      values = @node.xpath(".//#{string}")
+      values.each do |object|
+        hash = {}
+        key = get_key(object)
+        value = object.xpath("#{xpath_string}").text
+        hash["type"] = key
+        hash["value"] = value
+        array.push(hash)
+      end
+      array
+    end
+
+  #structured postal address, formatted address
     def value_array(string, value_string)
-      array = []
-      values = @node.xpath(".//#{string}")
-      values.each do |object|
-        hash = {}
-        key = get_key(object)
-        value = object.xpath(".//#{value_string}").text
-        hash["type"] = key
-        hash["value"] = value
-        array.push(hash)
-      end
-      array
+      value_string = ".//" << value_string
+      types_and_values(string, value_string)
     end
 
-    def something(string)
-      array = []
-      values = @node.xpath(".//#{string}")
-      values.each do |object|
-        hash = {}
-        key = get_key(object)
-        value = object.xpath(".").text
-        hash["type"] = key
-        hash["value"] = value
-        array.push(hash)
-      end
-      array
+    def attribute_array(string)
+      types_and_values(string, ".")
     end
 
-    def attribute_array(string, attribute_string)
-      array = []
-      values = @node.xpath(".//#{string}")
-      values.each do |object|
-        hash = {}
-        key = get_key(object)
-        value = object.xpath("./@#{attribute_string}").text
-        hash["type"] = key
-        hash["value"] = value
-        array.push(hash)
-      end
-      array
+    def node_attribute_array(string, attribute_string)
+      types_and_values(string, "./@#{attribute_string}")
     end
 
     def get_key(object)
@@ -117,9 +109,9 @@ module GoogleContactsApi
       raise NotImplementedError
     end
 
-    def inspect
-      "<#{self.class}: #{title}>"
-    end
+    # def inspect
+    #   "<#{self.class}: #{title}>"
+    # end
 
     def as_json(options={})
       options[:except] ||= ["api", "node"]
