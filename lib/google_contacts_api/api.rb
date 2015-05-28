@@ -16,9 +16,6 @@ module GoogleContactsApi
     end
 
     # Get request to specified link, with query params
-    # For get, post, put, delete, always use JSON, it's simpler
-    # and lets us use Hashie::Mash. Note that in the JSON conversion from XML,
-    # ":" is replaced with $, element content is keyed with $t
     # Raise UnauthorizedError if not authorized.
     def get(link, params = {}, headers = {})
       merged_params = params_with_defaults(params)
@@ -40,16 +37,12 @@ module GoogleContactsApi
     # Post request to specified link, with query params
     # Not tried yet, might be issues with params
     def post(link, params = {}, headers = {})
-      raise NotImplementedError
-      params["alt"] = "json"
       @oauth.post("#{BASE_URL}#{link}?#{params.to_query}", headers)
     end
 
     # Put request to specified link, with query params
     # Not tried yet
     def put(link, params = {}, headers = {})
-      # raise NotImplementedError
-      params["alt"] = "json"
       @oauth.put("#{BASE_URL}#{link}?#{params.to_query}", headers)
     end
 
@@ -57,7 +50,6 @@ module GoogleContactsApi
     # Not tried yet
     def delete(link, params = {}, headers = {})
       raise NotImplementedError
-      params["alt"] = "json"
       @oauth.delete("#{BASE_URL}#{link}?#{params.to_query}", headers)
     end
 
@@ -70,9 +62,7 @@ module GoogleContactsApi
     private
 
     def params_with_defaults(params)
-      p = params #.merge({
-      #   "alt" => "json"
-      # })
+      p = params
       p['v'] = '3' unless p['v']
       p
     end

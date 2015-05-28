@@ -7,26 +7,25 @@ module GoogleContactsApi
   class Contact < GoogleContactsApi::Result
     # Returns the array of links, as link is an array for Hashie.
     def links
-      self["link"].map { |l| l.href }
+      @links = nodeAttribute("link", "href")
     end
 
     # Returns link to get this contact
     def self_link
-      _link = self["link"].find { |l| l.rel == "self" }
-      _link ? _link.href : nil
+      @self_link = @node.xpath(".//link[@rel='self']/@href").text
     end
+
+    # I haven't seen an example of this in my output
 
     # Returns alternative, possibly off-Google home page link
     def alternate_link
-      _link = self["link"].find { |l| l.rel == "alternate" }
-      _link ? _link.href : nil
+      @alternate_link = @node.xpath(".//link[@rel='alternate']/@href").text
     end
 
     # Returns link for photo
     # (still need authentication to get the photo data, though)
     def photo_link
-      _link = self["link"].find { |l| l.rel == "http://schemas.google.com/contacts/2008/rel#photo" }
-      _link ? _link.href : nil
+      @photo_link = @node.xpath(".//link[@type='image/*']/@href").text
     end
 
     # Returns binary data for the photo. You can probably
@@ -47,6 +46,8 @@ module GoogleContactsApi
       end
     end
 
+    # haven't seen this in the output either
+
     # Returns link to add/replace the photo
     def edit_photo_link
       _link = self["link"].find { |l| l.rel == "http://schemas.google.com/contacts/2008/rel#edit_photo" }
@@ -55,114 +56,110 @@ module GoogleContactsApi
 
     # Returns link to edit the contact
     def edit_link
-      _link = self["link"].find { |l| l.rel == "edit" }
-      _link ? _link.href : nil
+      @edit_link = @node.xpath(".//link[@rel='edit']/@href").text
     end
 
     # Returns all phone numbers for the contact
     def phone_numbers
-      self["gd$phoneNumber"] ? self["gd$phoneNumber"].map { |e| e['$t'] } : []
+      @phone_numbers = something("phoneNumber")
+    end
+
+    def mobile_number
+      numbers = phone_numbers
+      @mobile_number = ""
+      numbers.each do |number|
+        if number["type"].eql?("mobile")
+          @mobile_number = number["value"]
+        end
+      end
+      @mobile_number
+    end
+
+    def phone_number
+      numbers = phone_numbers
+      @phone_number = ""
+      numbers.each do |number|
+        unless number["type"].eql?("mobile")
+          @phone_number = number["value"]
+          return @phone_number
+        end
+      end
+      @phone_number
     end
 
     # Returns all email addresses for the contact
     def emails
-      self["gd$email"] ? self["gd$email"].map { |e| e.address } : []
+      @emails = attribute_array("email", "address")
     end
 
     # Returns primary email for the contact
     def primary_email
-      if self["gd$email"]
-        _email = self["gd$email"].find { |e| e.primary == "true" }
-        _email ? _email.address : nil
-      else
-        nil # no emails at all
-      end
+      @primary_email = @node.xpath(".//email[@primary='true']/@address").text
     end
 
     # Returns all instant messaging addresses for the contact.
     # Doesn't yet distinguish protocols
     def ims
-      self["gd$im"] ? self["gd$im"].map { |i| i.address } : []
+      @im = nodeAttribute("im", "address")
+      # self["gd$im"] ? self["gd$im"].map { |i| i.address } : []
     end
 
-    # Convenience method to return a nested $t field.
-    # If the field doesn't exist, return nil
-    def nested_t_field_or_nil(level1, level2)
-      if self[level1]
-        self[level1][level2] ? self[level1][level2]['$t']: nil
-      end
-    end
     def given_name
-      nested_t_field_or_nil 'gd$name', 'gd$givenName'
+      @first_name = nodeValue("givenName")
     end
     def family_name
-      nested_t_field_or_nil 'gd$name', 'gd$familyName'
+      @family_name = nodeValue("familyName")
     end
     def full_name
-      nested_t_field_or_nil 'gd$name', 'gd$fullName'
+      @full_name = nodeValue("fullName")
     end
     def additional_name
-      nested_t_field_or_nil 'gd$name', 'gd$additionalName'
+      @additional_name = nodeValue("additionalName")
     end
     def name_prefix
-      nested_t_field_or_nil 'gd$name', 'gd$namePrefix'
+      @name_prefix = nodeValue("namePrefix")
     end
     def name_suffix
-      nested_t_field_or_nil 'gd$name', 'gd$nameSuffix'
+      @name_suffix = nodeValue("nameSuffix")
+    end
+    def nickname
+      @nickname = nodeValue("nickname")
+    end
+
+    def organization
+      @organization = nodeValue("orgName")
+    end
+
+    def job_title
+      @job_title = nodeValue("orgTitle")
     end
 
     def relations
-      self['gContact$relation'] ? self['gContact$relation'] : []
+      @relations = nodeValue("relation")
     end
 
     # Returns the spouse of the contact. (Assumes there's only one.)
     def spouse
-      spouse_rel = relations.find {|r| r.rel = 'spouse'}
-      spouse_rel['$t'] if spouse_rel
+      @spouse = @node.xpath(".//relation[@rel='spouse']").text
     end
 
-    # Return an Array of Hashes representing addresses with formatted metadata.
+    def website
+      @website = {}
+      site_type = nodeAttribute("website", "rel").text
+      site = nodeAttribute("website", "href").text
+      @website["type"] = site_type
+      @website["value"] = site
+    end
+
     def addresses
-      self['gd$structuredPostalAddress'] ? self['gd$structuredPostalAddress'].map(&method(:format_address)) : []
+      @addresses = value_array("structuredPostalAddress", "formattedAddress")
     end
 
-    # Return an Array of Hashes representing phone numbers with formatted metadata.
-    def phone_numbers_full
-      self["gd$phoneNumber"] ? self["gd$phoneNumber"].map(&method(:format_phone_number)) : []
-    end
-
-    # Return an Array of Hashes representing emails with formatted metadata.
-    def emails_full
-      self["gd$email"] ? self["gd$email"].map(&method(:format_email)) : []
-    end
-
-  private
-    def format_address(unformatted)
-      formatted = {}
-      formatted[:rel] = unformatted['rel'] ? unformatted['rel'].gsub('http://schemas.google.com/g/2005#', '') : 'work'
-      unformatted.delete 'rel'
-      unformatted.each do |key, value|
-        formatted[key.sub('gd$', '').underscore.to_sym] = value['$t']
+    def primary_address
+      if addresses.first
+        @primary_address = addresses.first["value"]
       end
-      formatted
     end
 
-    def format_email_or_phone(unformatted)
-      formatted = {}
-      unformatted.each do |key, value|
-        formatted[key.underscore.to_sym] = value ? value.gsub('http://schemas.google.com/g/2005#', '') : value
-      end
-      formatted[:primary] = unformatted['primary'] ? unformatted['primary'] == 'true' : false
-      formatted
-    end
-
-    def format_phone_number(unformatted)
-      unformatted[:number] = unformatted['$t']
-      unformatted.delete '$t'
-      format_email_or_phone unformatted
-    end
-    def format_email(unformatted)
-      format_email_or_phone unformatted
-    end
   end
 end

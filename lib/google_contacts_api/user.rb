@@ -11,7 +11,6 @@ module GoogleContactsApi
     # Return the contacts for this user and cache them.
     def contacts(params = {})
       # contacts in this group
-      p "contacts"
       @contacts ||= get_contacts(params)
     end
 

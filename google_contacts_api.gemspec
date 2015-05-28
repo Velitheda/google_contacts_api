@@ -37,7 +37,6 @@ Gem::Specification.new do |s|
     "lib/google_contacts_api/result_set.rb",
     "lib/google_contacts_api/user.rb",
     "lib/google_contacts_api/version.rb",
-    "lib/google_contacts_api/xml_result_set.rb",
     "spec/contact_set.json",
     "spec/empty_contact_set.json",
     "spec/errors/auth_sub_401.html",
