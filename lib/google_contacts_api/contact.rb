@@ -155,7 +155,7 @@ module GoogleContactsApi
     end
 
     def as_json(options={})
-      # options[:except] ||= ["api", "node"]
+      options[:except] ||= ["api", "node"]
       super(options)
     end
 
