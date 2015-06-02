@@ -3,13 +3,12 @@ require 'nokogiri'
 module GoogleContactsApi
   # Base class for Group and Contact.
   class Result
-    attr_reader :api
+    attr_reader :api, :raw_xml
     # Initialize a Result from a single result's Hash/Hashie
     def initialize(source_hash = nil, default = nil, api = nil, &blk)
       @api = api if api
-
       @node = source_hash
-
+      @raw_xml = @node.to_xml
       # p "id: #{id}"
       # p "title: #{title}"
       # p "etag: #{etag}"
@@ -19,18 +18,18 @@ module GoogleContactsApi
       # p "etag: #{etag}"
     end
 
-# node value text
+#gets a value from xml
     def node_value(string)
-      @node.xpath(".//#{string}").text
+      @node.xpath(".//atom:#{string}", 'atom' => 'http://www.w3.org/2005/Atom').text
     end
 
-# def node value
+#gets an attribute in the xml
     def node_attribute(string, attribute_name)
-      @node.xpath(".//#{string}/@#{attribute_name}")
+      @node.xpath(".//atom:#{string}/@#{attribute_name}", 'atom' => 'http://www.w3.org/2005/Atom')
     end
 
     def attribute(attribute_string)
-      object.xpath("./@#{attribute_string}").text
+      object.xpath("./atom:@#{attribute_string}", 'atom' => 'http://www.w3.org/2005/Atom').text
     end
 
     def types_and_values(string, xpath_string)

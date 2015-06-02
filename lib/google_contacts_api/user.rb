@@ -21,6 +21,14 @@ module GoogleContactsApi
       contacts(params)
     end
 
+    def create_contact(contact)
+      @api.create_contact(contact)
+    end
+
+    def revert_contact(contact)
+      @api.put(contact)
+    end
+
     # Return the groups for this user and cache them.
     def groups(params = {})
       @groups ||= get_groups(params)

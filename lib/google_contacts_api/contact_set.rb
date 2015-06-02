@@ -3,6 +3,8 @@ module GoogleContactsApi
   require 'google_contacts_api/result_set'
   require 'google_contacts_api/result'
   require 'google_contacts_api/contact'
+
+  require 'nokogiri'
   class ContactSet < GoogleContactsApi::ResultSet
 
     attr_reader :results
@@ -12,7 +14,9 @@ module GoogleContactsApi
       @results = []
 
       @entries.each do |e|
-        # puts e
+        # puts "raw xml: #{e.children}"
+        # e.remove_namespaces!
+        # puts "namespaceed xml: #{e.children}"
         contact = GoogleContactsApi::Contact.new(e, nil, api)
         @results.push(contact)
         p "full_name: #{contact.full_name}"
@@ -30,6 +34,8 @@ module GoogleContactsApi
         p "phone: #{contact.phone_number}"
         p "website: #{contact.website}"
         p "nickname: #{contact.nickname}"
+        p "edit link: #{contact.edit_link}"
+        p "id: #{contact.id}"
       end
       @results
     end

@@ -28,8 +28,19 @@ module GoogleContactsApi
 
     def put_contacts(params = {})
       params = params.with_indifferent_access
+      params["If-Match"] = "*"
 
-      # TODO: implement
+      url = "contacts/default/full"
+      response = @api.put(url, params)
+      puts "Contacts response code: #{GoogleContactsApi::Api.parse_response_code(response)}"
+      # TODO: Define some fancy exceptions
+      case GoogleContactsApi::Api.parse_response_code(response)
+      when 401; raise
+      when 403; raise
+      when 404; raise
+      when 400...500; raise
+      when 500...600; raise
+      end
     end
   end
 end

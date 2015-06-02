@@ -37,13 +37,50 @@ module GoogleContactsApi
     # Post request to specified link, with query params
     # Not tried yet, might be issues with params
     def post(link, params = {}, headers = {})
-      @oauth.post("#{BASE_URL}#{link}?#{params.to_query}", headers)
+      p params.inspect
+      @oauth.post("#{BASE_URL}#{"contacts/default/full/"}?#{params.to_query}", headers)
+    end
+
+    # revert contact
+    #
+    def create_contact(contact)
+
+      options ={
+        headers: {
+          'Content-type' => 'application/atom+xml'
+          },
+        body: contact.raw_xml
+      }
+      uri = URI.parse("https://www.google.com/m8/feeds/contacts/default/full/")
+      # puts uri
+      # puts options
+      @oauth.post(uri, options)
     end
 
     # Put request to specified link, with query params
     # Not tried yet
-    def put(link, params = {}, headers = {})
-      @oauth.put("#{BASE_URL}#{link}?#{params.to_query}", headers)
+    def put(contact)
+      # headers['Content-type'] = 'application/atom+xml'
+      # @oauth.put("#{BASE_URL}#{link}?#{params.to_query}", headers)
+      options ={
+        headers: {
+          'Content-type' => 'application/atom+xml',
+          'If-Match' => '*',
+          'v' => '3'
+          },
+        body: contact.raw_xml
+      }
+      p "Edit link: #{contact.edit_link}"
+      uri = URI.parse(contact.edit_link)
+      # puts uri
+      # puts options
+      # begin
+        response = @oauth.put(uri, options)
+        puts "response code: #{GoogleContactsApi::Api.parse_response_code(response)}"
+      # rescue => e
+        # puts "404: #{self.class.parse_response_code(e.response)}"
+        # raise UnauthorizedError if defined?(e.response) && self.class.parse_response_code(e.response) == 404
+      # end
     end
 
     # Delete request to specified link, with query params

@@ -1,20 +1,51 @@
 module GoogleContactsApi
   # Represents a single contact.
   class Contact < GoogleContactsApi::Result
-    # Returns the array of links, as link is an array for Hashie.
+
+    def initialize_from_api
+      puts "initilising"
+      @links = links
+      @self_link = self_link
+      @photo_link = photo_link
+      puts "initilising1"
+      @edit_link = edit_link
+      puts "init #{@edit_link}"
+      @phone_numbers = phone_numbers
+      @mobile_number = mobile_number
+      @phone_number = phone_number
+      @emails = emails
+      @primary_email = primary_email
+      @ims = ims
+      @given_name = given_name
+      @family_name = family_name
+      @full_name = full_name
+      @additional_name = additional_name
+      @name_prefix = name_prefix
+      @name_suffix = name_suffix
+      @nickname = nickname
+      @organization = organization
+      @job_title = job_title
+      @relations = relations
+      @events = events
+      @spouse = spouse
+      @website = website
+      @addresses = addresses
+      @primary_address = primary_address
+    end
+
     def links
-      @links = node_attribute("link", "href")
+      node_attribute("link", "href")
     end
 
     # Returns link to get this contact
     def self_link
-      @self_link = @node.xpath(".//link[@rel='self']/@href").text
+      @node.xpath(".//link[@rel='self']/@href").text
     end
 
     # Returns link for photo
     # (still need authentication to get the photo data, though)
     def photo_link
-      @photo_link = @node.xpath(".//link[@type='image/*']/@href").text
+      @node.xpath(".//link[@type='image/*']/@href").text
     end
 
     # Returns binary data for the photo. You can probably
@@ -45,12 +76,14 @@ module GoogleContactsApi
 
     # Returns link to edit the contact
     def edit_link
-      @edit_link = @node.xpath(".//link[@rel='edit']/@href").text
+      @node.xpath(".//link[@rel='edit']/@href").text
+      @node.xpath(".//atom:link[@rel='edit']/@href", 'atom' => 'http://www.w3.org/2005/Atom').text
+      # @node.xpath(".//id").text
     end
 
     # Returns all phone numbers for the contact
     def phone_numbers
-      @phone_numbers = attribute_array("phoneNumber")
+      attribute_array("phoneNumber")
     end
 
     def mobile_number
@@ -78,62 +111,61 @@ module GoogleContactsApi
 
     # Returns all email addresses for the contact
     def emails
-      @emails = node_attribute_array("email", "address")
+      node_attribute_array("email", "address")
     end
 
     # Returns primary email for the contact
     def primary_email
-      @primary_email = @node.xpath(".//email[@primary='true']/@address").text
+      @node.xpath(".//email[@primary='true']/@address").text
     end
 
     # Returns all instant messaging addresses for the contact.
     # Doesn't yet distinguish protocols
     def ims
-      @im = nodeAttribute("im", "address")
-      # self["gd$im"] ? self["gd$im"].map { |i| i.address } : []
+      node_attribute("im", "address")
     end
 
     def given_name
-      @first_name = node_value("givenName")
+      node_value("givenName")
     end
     def family_name
-      @family_name = node_value("familyName")
+      node_value("familyName")
     end
     def full_name
-      @full_name = node_value("fullName")
+      node_value("fullName")
     end
     def additional_name
-      @additional_name = node_value("additionalName")
+      node_value("additionalName")
     end
     def name_prefix
-      @name_prefix = node_value("namePrefix")
+      node_value("namePrefix")
     end
     def name_suffix
-      @name_suffix = node_value("nameSuffix")
+      node_value("nameSuffix")
     end
     def nickname
-      @nickname = node_value("nickname")
+      node_value("nickname")
     end
 
     def organization
-      @organization = node_value("orgName")
+      node_value("orgName")
     end
 
     def job_title
-      @job_title = node_value("orgTitle")
+      node_value("orgTitle")
     end
 
     def relations
-      @relations = attribute_array("relation")
+      attribute_array("relation")
     end
 
     def events
-      @events = types_and_values("event", "./when/@startTime")
+      types_and_values("event", "./when/@startTime")
     end
 
     # Returns the spouse of the contact. (Assumes there's only one.)
     def spouse
-      @spouse = @node.xpath(".//relation[@rel='spouse']").text
+      @node.xpath(".//relation[@rel='spouse']").text
     end
 
     def website
@@ -145,7 +177,7 @@ module GoogleContactsApi
     end
 
     def addresses
-      @addresses = value_array("structuredPostalAddress", "formattedAddress")
+      value_array("structuredPostalAddress", "formattedAddress")
     end
 
     def primary_address

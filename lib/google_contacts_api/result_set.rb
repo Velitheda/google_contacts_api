@@ -17,10 +17,13 @@ module GoogleContactsApi
     end
 
     def parse(response_body)
+      raw_xml = response_body
       @xml = Nokogiri::XML(response_body)
-      @xml.remove_namespaces!
+      # raw_entry = @xml.xpath("//xmlns:entry")
+      # p raw_entry.first.children
+      # @xml.remove_namespaces!
 
-      @entries = @xml.xpath("//entry")
+      @entries = @xml.xpath("//atom:entry", 'atom' => 'http://www.w3.org/2005/Atom')
       @entries
     end
 
