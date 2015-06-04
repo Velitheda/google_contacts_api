@@ -43,12 +43,14 @@ module GoogleContactsApi
     #   @oauth.post("#{BASE_URL}#{link}?#{params.to_query}", headers)
     # end
 
-    def post(contact_json)
+    def post(contact)
+      puts contact.entry_json
+
       options ={
         headers: {
           'Content-type' => 'application/json'
           },
-        body: contact_json.to_s
+        body: contact.entry_json
       }
       merged_params = params_with_defaults(options)
       uri = URI.parse("https://www.google.com/m8/feeds/contacts/default/full/")
@@ -58,35 +60,24 @@ module GoogleContactsApi
       # puts "response code: #{GoogleContactsApi::Api.parse_response_code(response)}"
     end
 
-    def revert_contact(contact_json)
-      code = put(contact_json)
-      p code
-      if code == 404
-        post(contact_json)
-      end
-    end
-
     # Put request to specified link, with query params
-    def put(contact_json)
+    def put(contact)
+      json = contact.entry_json
       options ={
         headers: {
           'Content-type' => 'application/json',
           'If-Match' => '*'
           },
-        body: contact_json.to_s
+        body: json
       }
       merged_params = params_with_defaults(options)
-
-      hash = Hashie::Mash.new(JSON.parse(contact_json))
-      contact = Contact.new(hash, nil, self)
-      # p contact
-      # p "Edit link: #{contact.edit_link}"
 
       uri = URI.parse("https://www.google.com/m8/feeds/contacts/thechestnutvixen%40gmail.com/full/213c4d228c463fec?v=3")
       begin
         response = @oauth.put(uri, merged_params)
         # puts "response code: #{GoogleContactsApi::Api.parse_response_code(response)}"
       rescue => e
+        puts e
         GoogleContactsApi::Api.parse_response_code(e.response)
       end
     end

@@ -3,6 +3,27 @@ module GoogleContactsApi
   class Group < GoogleContactsApi::Result
     include GoogleContactsApi::Contacts
 
+    attr_reader :json, :group_name, :member_details, :contact_count, :id
+
+    def initialize(source_hash = nil, default = nil, api = nil, &blk)
+      # def initialize(original_group, contacts)
+      @json = original_group
+      @original_group = original_group
+
+      @group_name = original_group["title"]["$t"]
+
+      @member_details = Array.new
+
+      contacts.each do |contact|
+        @member_details.push({ name: "#{contact.full_name}", email: "#{contact.primary_email}" })
+      end
+
+      @contact_count = @member_details.size
+
+      @id = original_group["id"]["$t"]
+    end
+
+
     # Return true if this is a system group.
     def system_group?
       !self["gContact$systemGroup"].nil?

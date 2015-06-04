@@ -1,13 +1,85 @@
 module GoogleContactsApi
   # Represents a single contact.
-  # Methods we could implement:
-  # :categories, (:content again), :links, (:title again), :email
-  # :extended_properties, :deleted, :im, :name,
-  # :organizations, :phone_numbers, :structured_postal_addresses, :where
   class Contact < GoogleContactsApi::Result
-    # Returns the array of links, as link is an array for Hashie.
+    attr_reader :json, :original_contact
+
+        def initialize(source_hash = nil, default = nil, api = nil, &blk)
+          super
+          @json = source_hash
+          @original_contact = source_hash
+          # initialize_numbers
+        end
+
+        def initialize_numbers
+          numbers = phone_numbers_full
+          numbers_hash = Hash.new
+
+          numbers.each do | number |
+            numbers_hash[ number[:rel] ] = number[:number]
+          end
+
+          @mobile_number = numbers_hash["mobile"]
+          numbers_hash.delete("mobile")
+
+          if numbers_hash.any?
+            @phone_number = numbers_hash.first[1]
+          end
+        end
+
+        def entry_json
+          # wrap in entry
+          hash = {}
+          hash["entry"] = @original_contact
+          entry_json = JSON.pretty_generate(hash)
+        end
+
+        #this selects the first address in list we have
+        def primary_address
+          value = first_value_for_key_in_collection(@json["gd$structuredPostalAddress"], "gd$formattedAddress")
+          value_at_dollar_t(value)
+        end
+
+        def website
+          first_value_for_key_in_collection(@json["gContact$website"], "href")
+        end
+
+        def organization
+          value = first_value_for_key_in_collection(@json["gd$organization"], "gd$orgName")
+          value_at_dollar_t(value)
+        end
+
+        def job_title
+          value = first_value_for_key_in_collection(@json["gd$organization"], "gd$orgTitle")
+          value_at_dollar_t(value)
+        end
+
+        def value_at_dollar_t(hash)
+          hash ? hash["$t"] : ""
+        end
+
+        def first_value_for_key_in_collection(collection, key)
+          value = nil
+          if collection && collection.any?
+            first = collection.first
+            value = first[key] if first.has_key?(key)
+          end
+          value
+        end
+
+        def id
+          value_at_dollar_t(@json["id"])
+        end
+
+        def mobile_number
+          @mobile_number
+        end
+
+        def phone_number
+          @phone_number
+        end
+
     def links
-      self["link"].map { |l| l.href }
+      @json["link"].map { |l| l.href }
     end
 
     # Returns link to get this contact
@@ -18,14 +90,14 @@ module GoogleContactsApi
 
     # Returns alternative, possibly off-Google home page link
     def alternate_link
-      _link = self["link"].find { |l| l.rel == "alternate" }
+      _link = @json["link"].find { |l| l.rel == "alternate" }
       _link ? _link.href : nil
     end
 
     # Returns link for photo
     # (still need authentication to get the photo data, though)
     def photo_link
-      _link = self["link"].find { |l| l.rel == "http://schemas.google.com/contacts/2008/rel#photo" }
+      _link = @json["link"].find { |l| l.rel == "http://schemas.google.com/contacts/2008/rel#photo" }
       _link ? _link.href : nil
     end
 
@@ -49,30 +121,30 @@ module GoogleContactsApi
 
     # Returns link to add/replace the photo
     def edit_photo_link
-      _link = self["link"].find { |l| l.rel == "http://schemas.google.com/contacts/2008/rel#edit_photo" }
+      _link = @json["link"].find { |l| l.rel == "http://schemas.google.com/contacts/2008/rel#edit_photo" }
       _link ? _link.href : nil
     end
 
     # Returns link to edit the contact
     def edit_link
-      _link = self["link"].find { |l| l.rel == "edit" }
+      _link = @json["link"].find { |l| l.rel == "edit" }
       _link ? _link.href : nil
     end
 
     # Returns all phone numbers for the contact
     def phone_numbers
-      self["gd$phoneNumber"] ? self["gd$phoneNumber"].map { |e| e['$t'] } : []
+      @json["gd$phoneNumber"] ? @json["gd$phoneNumber"].map { |e| e['$t'] } : []
     end
 
     # Returns all email addresses for the contact
     def emails
-      self["gd$email"] ? self["gd$email"].map { |e| e.address } : []
+      @json["gd$email"] ? @json["gd$email"].map { |e| e.address } : []
     end
 
     # Returns primary email for the contact
     def primary_email
-      if self["gd$email"]
-        _email = self["gd$email"].find { |e| e.primary == "true" }
+      if @json["gd$email"]
+        _email = @json["gd$email"].find { |e| e.primary == "true" }
         _email ? _email.address : nil
       else
         nil # no emails at all
@@ -82,14 +154,14 @@ module GoogleContactsApi
     # Returns all instant messaging addresses for the contact.
     # Doesn't yet distinguish protocols
     def ims
-      self["gd$im"] ? self["gd$im"].map { |i| i.address } : []
+      @json["gd$im"] ? @json["gd$im"].map { |i| i.address } : []
     end
 
     # Convenience method to return a nested $t field.
     # If the field doesn't exist, return nil
     def nested_t_field_or_nil(level1, level2)
-      if self[level1]
-        self[level1][level2] ? self[level1][level2]['$t']: nil
+      if @json[level1]
+        @json[level1][level2] ? @json[level1][level2]['$t']: nil
       end
     end
     def given_name
@@ -112,7 +184,7 @@ module GoogleContactsApi
     end
 
     def relations
-      self['gContact$relation'] ? self['gContact$relation'] : []
+      @json['gContact$relation'] ? @json['gContact$relation'] : []
     end
 
     # Returns the spouse of the contact. (Assumes there's only one.)
@@ -123,17 +195,17 @@ module GoogleContactsApi
 
     # Return an Array of Hashes representing addresses with formatted metadata.
     def addresses
-      self['gd$structuredPostalAddress'] ? self['gd$structuredPostalAddress'].map(&method(:format_address)) : []
+      @json['gd$structuredPostalAddress'] ? @json['gd$structuredPostalAddress'].map(&method(:format_address)) : []
     end
 
     # Return an Array of Hashes representing phone numbers with formatted metadata.
     def phone_numbers_full
-      self["gd$phoneNumber"] ? self["gd$phoneNumber"].map(&method(:format_phone_number)) : []
+      @json["gd$phoneNumber"] ? @json["gd$phoneNumber"].map(&method(:format_phone_number)) : []
     end
 
     # Return an Array of Hashes representing emails with formatted metadata.
     def emails_full
-      self["gd$email"] ? self["gd$email"].map(&method(:format_email)) : []
+      @json["gd$email"] ? @json["gd$email"].map(&method(:format_email)) : []
     end
 
   private
