@@ -2,7 +2,7 @@ module GoogleContactsApi
   class User
     include GoogleContactsApi::Contacts
     include GoogleContactsApi::Groups
-    
+
     attr_reader :api
     def initialize(oauth)
       @api = GoogleContactsApi::Api.new(oauth)
@@ -31,5 +31,14 @@ module GoogleContactsApi
       @groups = nil
       groups(params)
     end
+
+    def revert(json)
+      code = @api.put(json)
+      p code
+      if code == 404
+        @api.post(json)
+      end
+    end
+
   end
 end

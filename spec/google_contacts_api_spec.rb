@@ -2,7 +2,7 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 class MockOAuth2Error < StandardError
   attr_accessor :response
-  
+
   def initialize(response)
     @response = response
   end
@@ -36,7 +36,21 @@ describe "GoogleContactsApi" do
     end
 
     # Not implemented yet
-    pending "should perform a post request using oauth"
+    # pending "should perform a post request using oauth"
+
+    describe ".create_contact" do
+      it "should perform a post request using oauth returning json with version 3" do
+        puts "hii"
+        # expectation should come before execution
+        expect(@oauth).to receive(:post).with(
+          GoogleContactsApi::Api::BASE_URL + "any_url?alt=json&param=param&v=3", {"header" => "header"})
+        expect(@api.get("any_url",
+          {"param" => "param"},
+          {"header" => "header"})).to eq("get response")
+      end
+    end
+
+
     pending "should perform a put request using oauth"
     pending "should perform a delete request using oauth"
     # Not sure how to test, you'd need a revoked token.
@@ -49,7 +63,7 @@ describe "GoogleContactsApi" do
         {"param" => "param"},
         {"header" => "header"}) }.to raise_error(GoogleContactsApi::UnauthorizedError)
     end
-    
+
     it "should raise UnauthorizedError if OAuth 2.0 returns unauthorized" do
       oauth = double("oauth2")
       oauth2_response = Struct.new(:status)
@@ -59,7 +73,7 @@ describe "GoogleContactsApi" do
         {"param" => "param"},
         {"header" => "header"}) }.to raise_error(GoogleContactsApi::UnauthorizedError)
     end
-    
+
     describe "parsing response code" do
       before(:all) do
         @Oauth = Struct.new(:code)
@@ -322,7 +336,7 @@ describe "GoogleContactsApi" do
 
         @partly_empty = GoogleContactsApi::Contact.new(
           'gd$name' => {},
-          'gContact$relation' => []        
+          'gContact$relation' => []
         )
 
         @contact_v3 = GoogleContactsApi::Contact.new(
@@ -399,7 +413,7 @@ describe "GoogleContactsApi" do
         expect(@partly_empty.spouse).to be_nil
         expect(@contact_v3.spouse).to eq('Jane')
       end
-      
+
       it 'has addresses' do
         expect(@empty.addresses).to eq([])
 
