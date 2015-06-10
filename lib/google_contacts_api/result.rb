@@ -5,11 +5,19 @@ module GoogleContactsApi
   # In the JSON responses, ":" from the equivalent XML response is replaced
   # with a "$", while element content is instead keyed with "$t".
   class Result < Hashie::Mash
-    attr_reader :api
+    attr_reader :api, :json
     # Initialize a Result from a single result's Hash/Hashie
     def initialize(source_hash = nil, default = nil, api = nil, &blk)
       @api = api if api
+      @json = source_hash
       super(source_hash, default, &blk)
+    end
+
+    def entry_json
+      # wrap in entry
+      hash = {}
+      hash["entry"] = @json
+      entry_json = JSON.pretty_generate(hash)
     end
 
     # TODO: Conditional retrieval? There might not be an etag in the
@@ -21,6 +29,23 @@ module GoogleContactsApi
       _id = self["id"]
       _id ? _id["$t"] : nil
     end
+
+    def links
+      self["link"].map { |l| l.href }
+    end
+
+    # Returns link to get this result
+    def self_link
+      _link = self["link"].find { |l| l.rel == "self" }
+      _link ? _link.href : nil
+    end
+
+    # Returns link to edit the result
+    def edit_link
+      _link = self["link"].find { |l| l.rel == "edit" }
+      _link ? _link.href : nil
+    end
+
 
     # For Contacts, returns the (full) name.
     # For Groups, returns the name of the group.

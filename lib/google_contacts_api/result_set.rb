@@ -13,9 +13,9 @@ module GoogleContactsApi
     def initialize(response_body, api = nil)
       @api = api
       @parsed = Hashie::Mash.new(JSON.parse(response_body))
-      @total_results = @parsed.feed["openSearch$totalResults"]["$t"].to_i
-      @start_index = @parsed.feed["openSearch$startIndex"]["$t"].to_i
-      @items_per_page = @parsed.feed["openSearch$itemsPerPage"]["$t"].to_i
+      @total_results = @parsed["feed"]["openSearch$totalResults"]["$t"].to_i
+      @start_index = @parsed["feed"]["openSearch$startIndex"]["$t"].to_i
+      @items_per_page = @parsed["feed"]["openSearch$itemsPerPage"]["$t"].to_i
       @results = []
     end
 

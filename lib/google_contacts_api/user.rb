@@ -34,12 +34,17 @@ module GoogleContactsApi
 
     def save_contact(json)
       contact = Contact.new(json, nil, @api)
-
-      #gem munts the number field, so request fails
       code = @api.put(contact)
-      p code
       if code == 404
         @api.post(contact)
+      end
+    end
+
+    def save_group(json)
+      group = Group.new(json["original_group"], nil, @api)
+      code = @api.put_group(group)
+      if code == 404
+        @api.post_group(group)
       end
     end
 

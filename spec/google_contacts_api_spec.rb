@@ -38,17 +38,17 @@ describe "GoogleContactsApi" do
     # Not implemented yet
     # pending "should perform a post request using oauth"
 
-    describe ".create_contact" do
-      it "should perform a post request using oauth returning json with version 3" do
-        puts "hii"
-        # expectation should come before execution
-        expect(@oauth).to receive(:post).with(
-          GoogleContactsApi::Api::BASE_URL + "any_url?alt=json&param=param&v=3", {"header" => "header"})
-        expect(@api.get("any_url",
-          {"param" => "param"},
-          {"header" => "header"})).to eq("get response")
-      end
-    end
+    # describe ".create_contact" do
+    #   it "should perform a post request using oauth returning json with version 3" do
+    #     puts "hii"
+    #     # expectation should come before execution
+    #     expect(@oauth).to receive(:post).with(
+    #       GoogleContactsApi::Api::BASE_URL + "any_url?alt=json&param=param&v=3", {"header" => "header"})
+    #     expect(@api.get("any_url",
+    #       {"param" => "param"},
+    #       {"header" => "header"})).to eq("get response")
+    #   end
+    # end
 
 
     pending "should perform a put request using oauth"

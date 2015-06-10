@@ -44,3 +44,9 @@ RDoc::Task.new do |rdoc|
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
+
+
+task :test do
+  $LOAD_PATH.unshift('lib', 'test')
+  Dir.glob('./test/**/*_test.rb') { |f| require f }
+end

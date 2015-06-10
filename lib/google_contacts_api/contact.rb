@@ -1,103 +1,65 @@
 module GoogleContactsApi
+
   # Represents a single contact.
   class Contact < GoogleContactsApi::Result
+
     attr_reader :json, :original_contact
 
-        def initialize(source_hash = nil, default = nil, api = nil, &blk)
-          super
-          @json = source_hash
-          @original_contact = source_hash
-          # initialize_numbers
-        end
-
-        def initialize_numbers
-          numbers = phone_numbers_full
-          numbers_hash = Hash.new
-
-          numbers.each do | number |
-            numbers_hash[ number[:rel] ] = number[:number]
-          end
-
-          @mobile_number = numbers_hash["mobile"]
-          numbers_hash.delete("mobile")
-
-          if numbers_hash.any?
-            @phone_number = numbers_hash.first[1]
-          end
-        end
-
-        def entry_json
-          # wrap in entry
-          hash = {}
-          hash["entry"] = @original_contact
-          entry_json = JSON.pretty_generate(hash)
-        end
-
-        #this selects the first address in list we have
-        def primary_address
-          value = first_value_for_key_in_collection(@json["gd$structuredPostalAddress"], "gd$formattedAddress")
-          value_at_dollar_t(value)
-        end
-
-        def website
-          first_value_for_key_in_collection(@json["gContact$website"], "href")
-        end
-
-        def organization
-          value = first_value_for_key_in_collection(@json["gd$organization"], "gd$orgName")
-          value_at_dollar_t(value)
-        end
-
-        def job_title
-          value = first_value_for_key_in_collection(@json["gd$organization"], "gd$orgTitle")
-          value_at_dollar_t(value)
-        end
-
-        def value_at_dollar_t(hash)
-          hash ? hash["$t"] : ""
-        end
-
-        def first_value_for_key_in_collection(collection, key)
-          value = nil
-          if collection && collection.any?
-            first = collection.first
-            value = first[key] if first.has_key?(key)
-          end
-          value
-        end
-
-        def id
-          value_at_dollar_t(@json["id"])
-        end
-
-        def mobile_number
-          @mobile_number
-        end
-
-        def phone_number
-          @phone_number
-        end
-
-    def links
-      @json["link"].map { |l| l.href }
+    #this selects the first address in list we have
+    def primary_address
+      value = first_value_for_key_in_collection(self["gd$structuredPostalAddress"], "gd$formattedAddress")
+      value_at_dollar_t(value)
     end
 
-    # Returns link to get this contact
-    def self_link
-      _link = self["link"].find { |l| l.rel == "self" }
-      _link ? _link.href : nil
+    def website
+      first_value_for_key_in_collection(self["gContact$website"], "href")
+    end
+
+    def organization
+      value = first_value_for_key_in_collection(self["gd$organization"], "gd$orgName")
+      value_at_dollar_t(value)
+    end
+
+    def job_title
+      value = first_value_for_key_in_collection(self["gd$organization"], "gd$orgTitle")
+      value_at_dollar_t(value)
+    end
+
+    def value_at_dollar_t(hash)
+      hash ? hash["$t"] : ""
+    end
+
+    def first_value_for_key_in_collection(collection, key)
+      value = nil
+      if collection && collection.any?
+        first = collection.first
+        value = first[key] if first.has_key?(key)
+      end
+      value
+    end
+
+    def id
+      value_at_dollar_t(self["id"])
+    end
+
+    def mobile_number
+      @mobile_number
+    end
+
+    def phone_number
+      @phone_number
     end
 
     # Returns alternative, possibly off-Google home page link
     def alternate_link
-      _link = @json["link"].find { |l| l.rel == "alternate" }
+      _link = self["link"].find { |l| l.rel == "alternate" }
       _link ? _link.href : nil
     end
 
     # Returns link for photo
     # (still need authentication to get the photo data, though)
     def photo_link
-      _link = @json["link"].find { |l| l.rel == "http://schemas.google.com/contacts/2008/rel#photo" }
+      _link = self["link"].find { |l| l.rel == "http://schemas.google.com/contacts/2008/rel#photo" }
       _link ? _link.href : nil
     end
 
@@ -121,30 +83,24 @@ module GoogleContactsApi
 
     # Returns link to add/replace the photo
     def edit_photo_link
-      _link = @json["link"].find { |l| l.rel == "http://schemas.google.com/contacts/2008/rel#edit_photo" }
-      _link ? _link.href : nil
-    end
-
-    # Returns link to edit the contact
-    def edit_link
-      _link = @json["link"].find { |l| l.rel == "edit" }
+      _link = self["link"].find { |l| l.rel == "http://schemas.google.com/contacts/2008/rel#edit_photo" }
       _link ? _link.href : nil
     end
 
     # Returns all phone numbers for the contact
     def phone_numbers
-      @json["gd$phoneNumber"] ? @json["gd$phoneNumber"].map { |e| e['$t'] } : []
+      slef["gd$phoneNumber"] ? self["gd$phoneNumber"].map { |e| e['$t'] } : []
     end
 
     # Returns all email addresses for the contact
     def emails
-      @json["gd$email"] ? @json["gd$email"].map { |e| e.address } : []
+      self["gd$email"] ? self["gd$email"].map { |e| e.address } : []
     end
 
     # Returns primary email for the contact
     def primary_email
-      if @json["gd$email"]
-        _email = @json["gd$email"].find { |e| e.primary == "true" }
+      if self["gd$email"]
+        _email = self["gd$email"].find { |e| e.primary == "true" }
         _email ? _email.address : nil
       else
         nil # no emails at all
@@ -154,14 +110,14 @@ module GoogleContactsApi
     # Returns all instant messaging addresses for the contact.
     # Doesn't yet distinguish protocols
     def ims
-      @json["gd$im"] ? @json["gd$im"].map { |i| i.address } : []
+      self["gd$im"] ? self["gd$im"].map { |i| i.address } : []
     end
 
     # Convenience method to return a nested $t field.
     # If the field doesn't exist, return nil
     def nested_t_field_or_nil(level1, level2)
-      if @json[level1]
-        @json[level1][level2] ? @json[level1][level2]['$t']: nil
+      if self[level1]
+        self[level1][level2] ? self[level1][level2]['$t']: nil
       end
     end
     def given_name
@@ -184,7 +140,7 @@ module GoogleContactsApi
     end
 
     def relations
-      @json['gContact$relation'] ? @json['gContact$relation'] : []
+      self['gContact$relation'] ? self['gContact$relation'] : []
     end
 
     # Returns the spouse of the contact. (Assumes there's only one.)
@@ -195,46 +151,46 @@ module GoogleContactsApi
 
     # Return an Array of Hashes representing addresses with formatted metadata.
     def addresses
-      @json['gd$structuredPostalAddress'] ? @json['gd$structuredPostalAddress'].map(&method(:format_address)) : []
+      self['gd$structuredPostalAddress'] ? self['gd$structuredPostalAddress'].map(&method(:format_address)) : []
     end
 
     # Return an Array of Hashes representing phone numbers with formatted metadata.
     def phone_numbers_full
-      @json["gd$phoneNumber"] ? @json["gd$phoneNumber"].map(&method(:format_phone_number)) : []
+      self["gd$phoneNumber"] ? self["gd$phoneNumber"].map(&method(:format_number)) : []
     end
 
     # Return an Array of Hashes representing emails with formatted metadata.
     def emails_full
-      @json["gd$email"] ? @json["gd$email"].map(&method(:format_email)) : []
+      self["gd$email"] ? self["gd$email"].map(&method(:format_email)) : []
     end
 
   private
+
+    def format_email(unformatted)
+      formatted = {}
+      rel = unformatted[:rel]
+      unformatted["primary"] ? formatted[:primary] = true : formatted[:primary] = false
+      formatted[:address] = unformatted["address"]
+      formatted[:rel] = rel.gsub('http://schemas.google.com/g/2005#', '')
+      formatted
+    end
+
+    def format_number(unformatted)
+      formatted = {}
+      unformatted["primary"] ? formatted[:primary] = true : formatted[:primary] = false
+      formatted[:number] = value_at_dollar_t(unformatted)
+      rel = unformatted[:rel]
+      formatted[:rel] = rel.gsub('http://schemas.google.com/g/2005#', '')
+      formatted
+    end
+
     def format_address(unformatted)
       formatted = {}
-      formatted[:rel] = unformatted['rel'] ? unformatted['rel'].gsub('http://schemas.google.com/g/2005#', '') : 'work'
-      unformatted.delete 'rel'
-      unformatted.each do |key, value|
-        formatted[key.sub('gd$', '').underscore.to_sym] = value['$t']
-      end
+      rel = unformatted[:rel]
+      formatted[:type] = rel.gsub('http://schemas.google.com/g/2005#', '')
+      formatted[:value] = unformatted.value_at_dollar_t("gd$formattedAddress")
       formatted
     end
 
-    def format_email_or_phone(unformatted)
-      formatted = {}
-      unformatted.each do |key, value|
-        formatted[key.underscore.to_sym] = value ? value.gsub('http://schemas.google.com/g/2005#', '') : value
-      end
-      formatted[:primary] = unformatted['primary'] ? unformatted['primary'] == 'true' : false
-      formatted
-    end
-
-    def format_phone_number(unformatted)
-      unformatted[:number] = unformatted['$t']
-      unformatted.delete '$t'
-      format_email_or_phone unformatted
-    end
-    def format_email(unformatted)
-      format_email_or_phone unformatted
-    end
   end
 end

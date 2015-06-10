@@ -44,8 +44,7 @@ module GoogleContactsApi
     # end
 
     def post(contact)
-      puts contact.entry_json
-
+      puts "posting"
       options ={
         headers: {
           'Content-type' => 'application/json'
@@ -56,33 +55,59 @@ module GoogleContactsApi
       uri = URI.parse("https://www.google.com/m8/feeds/contacts/default/full/")
 
       response = @oauth.post(uri, merged_params)
-
-      # puts "response code: #{GoogleContactsApi::Api.parse_response_code(response)}"
     end
 
     # Put request to specified link, with query params
     def put(contact)
-      json = contact.entry_json
       options ={
         headers: {
           'Content-type' => 'application/json',
           'If-Match' => '*'
           },
-        body: json
+        body: contact.entry_json
       }
       merged_params = params_with_defaults(options)
 
-      uri = URI.parse("https://www.google.com/m8/feeds/contacts/thechestnutvixen%40gmail.com/full/213c4d228c463fec?v=3")
+      uri = URI.parse(contact.edit_link)
       begin
         response = @oauth.put(uri, merged_params)
-        # puts "response code: #{GoogleContactsApi::Api.parse_response_code(response)}"
       rescue => e
-        puts e
         GoogleContactsApi::Api.parse_response_code(e.response)
       end
     end
 
-    # Not needed?
+    def post_group(group)
+      options ={
+        headers: {
+          'Content-type' => 'application/json'
+          },
+        body: group.entry_json
+      }
+      merged_params = params_with_defaults(options)
+      uri = URI.parse("https://www.google.com/m8/feeds/groups/default/full/")
+
+      response = @oauth.post(uri, merged_params)
+    end
+
+    def put_group(group)
+      options ={
+        headers: {
+          'Content-type' => 'application/json',
+          'If-Match' => '*'
+          },
+        body: group.entry_json
+      }
+      merged_params = params_with_defaults(options)
+
+      uri = URI.parse(group.edit_link)
+      begin
+        response = @oauth.put(uri, merged_params)
+        GoogleContactsApi::Api.parse_response_code(response)
+      rescue => e
+        GoogleContactsApi::Api.parse_response_code(e.response)
+      end
+    end
+
     # Delete request to specified link, with query params
     # Not tried yet
     def delete(link, params = {}, headers = {})
