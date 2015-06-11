@@ -20,6 +20,19 @@ module GoogleContactsApi
       entry_json = JSON.pretty_generate(hash)
     end
 
+    def value_at_dollar_t(hash)
+      hash ? hash["$t"] : ""
+    end
+
+    def first_value_for_key_in_collection(collection, key)
+      value = nil
+      if collection && collection.any?
+        first = collection.first
+        value = first[key] if first.has_key?(key)
+      end
+      value
+    end
+
     # TODO: Conditional retrieval? There might not be an etag in the
     # JSON representation, there is in the XML representation
     def etag
@@ -45,7 +58,6 @@ module GoogleContactsApi
       _link = self["link"].find { |l| l.rel == "edit" }
       _link ? _link.href : nil
     end
-
 
     # For Contacts, returns the (full) name.
     # For Groups, returns the name of the group.

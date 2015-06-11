@@ -35,16 +35,34 @@ module GoogleContactsApi
       result
     end
 
+    # these two methods will replace my previous two, but they aren't wired up to
+    # the rest of the code yet
     # Post request to specified link, with query params
-    # Not tried yet, might be issues with params
-    # def post(link, params = {}, headers = {})
-    #   raise NotImplementedError
-    #   params["alt"] = "json"
-    #   @oauth.post("#{BASE_URL}#{link}?#{params.to_query}", headers)
-    # end
+    def post_v2(link, params = {}, headers = {})
+      merged_params = params_with_defaults(params)
+      uri = "#{BASE_URL}#{link}?#{merged_params.to_query}"
+      begin
+        response = @oauth.post(uri, headers)
+      rescue => e
+        raise UnauthorizedError if defined?(e.response) && self.class.parse_response_code(e.response) == 401
+        raise e
+      end
+    end
+
+    # Put request to specified link, with query params
+    def put_v2(link, params = {}, headers = {})
+      # Doesn't handle id yet
+      merged_params = params_with_defaults(params)
+      uri = "#{BASE_URL}#{link}?#{merged_params.to_query}"
+      begin
+        response = @oauth.put(uri, headers)
+      rescue => e
+        raise UnauthorizedError if defined?(e.response) && self.class.parse_response_code(e.response) == 401
+        raise e
+      end
+    end
 
     def post(contact)
-      puts "posting"
       options ={
         headers: {
           'Content-type' => 'application/json'

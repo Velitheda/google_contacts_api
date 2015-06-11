@@ -25,23 +25,6 @@ module GoogleContactsApi
       value_at_dollar_t(value)
     end
 
-    def value_at_dollar_t(hash)
-      hash ? hash["$t"] : ""
-    end
-
-    def first_value_for_key_in_collection(collection, key)
-      value = nil
-      if collection && collection.any?
-        first = collection.first
-        value = first[key] if first.has_key?(key)
-      end
-      value
-    end
-
-    def id
-      value_at_dollar_t(self["id"])
-    end
-
     def mobile_number
       @mobile_number
     end
@@ -119,6 +102,7 @@ module GoogleContactsApi
       if self[level1]
         self[level1][level2] ? self[level1][level2]['$t']: nil
       end
+
     end
     def given_name
       nested_t_field_or_nil 'gd$name', 'gd$givenName'
@@ -187,8 +171,13 @@ module GoogleContactsApi
     def format_address(unformatted)
       formatted = {}
       rel = unformatted[:rel]
-      formatted[:type] = rel.gsub('http://schemas.google.com/g/2005#', '')
-      formatted[:value] = unformatted.value_at_dollar_t("gd$formattedAddress")
+      formatted[:rel] = rel.gsub('http://schemas.google.com/g/2005#', '')
+      formatted[:country] = value_at_dollar_t(unformatted["gd$country"])
+      formatted[:formatted_address] = value_at_dollar_t(unformatted["gd$formattedAddress"])
+      formatted[:city] = value_at_dollar_t(unformatted["gd$city"])
+      formatted[:street] = value_at_dollar_t(unformatted["gd$street"])
+      formatted[:region] = value_at_dollar_t(unformatted["gd$region"])
+      formatted[:postcode] = value_at_dollar_t(unformatted["gd$postcode"])
       formatted
     end
 
