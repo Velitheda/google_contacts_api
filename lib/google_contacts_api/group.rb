@@ -1,7 +1,7 @@
 module GoogleContactsApi
   # Represents a single group.
   class Group < GoogleContactsApi::Result
-    include GoogleContactsApi::Contacts
+    include GoogleContactsApi::ContactsAccessor
 
     attr_accessor :contacts
 
@@ -12,6 +12,8 @@ module GoogleContactsApi
 
     # Return the contacts in this group and cache them.
     def contacts(params = {})
+      # puts "api: #{@api}"
+      # puts "user: #{@user}"
       # contacts in this group
       @contacts ||= get_contacts({"group" => self.id}.merge(params))
     end

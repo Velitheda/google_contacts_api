@@ -2,6 +2,7 @@ require File.expand_path(File.dirname(__FILE__) + '../../spec_helper')
 
 describe GoogleContactsApi::User do
     let(:oauth) { double ("oauth") }
+    let(:api) { double("api") }
     let(:user) { GoogleContactsApi::User.new(@oauth) }
 
     # Should hit the right URLs and return the right stuff

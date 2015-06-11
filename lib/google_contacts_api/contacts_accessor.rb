@@ -1,6 +1,6 @@
 # Module that implements a method to get contacts for a user or group
 module GoogleContactsApi
-  module Contacts
+  module ContactsAccessor
     # Retrieve the contacts for this user or group
     def get_contacts(params = {})
       # TODO: Should return empty ContactSet (haven't implemented one yet)
@@ -14,7 +14,7 @@ module GoogleContactsApi
       params["max-results"] = 100000 unless params.key?("max-results")
       url = "contacts/default/full"
       response = @api.get(url, params)
-      
+
       # TODO: Define some fancy exceptions
       case GoogleContactsApi::Api.parse_response_code(response)
       when 401; raise

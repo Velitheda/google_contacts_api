@@ -1,6 +1,6 @@
 # Module that implements a method to get groups for a user
 module GoogleContactsApi
-  module Groups
+  module GroupsAccessor
     # Retrieve the contacts for this user or group
     def get_groups(params = {})
       params = params.with_indifferent_access
