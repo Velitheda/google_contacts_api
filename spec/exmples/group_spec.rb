@@ -6,6 +6,10 @@ describe GoogleContactsApi::Group do
     @group = GoogleContactsApi::Group.new(group_json_hash)
   end
   # ok, these tests are kind of silly
+  # it "returns the number at the end of the id link" do
+  #   expect(@group.id_number).to equal(6)
+  # end
+
   it "should return the right title" do
     expect(@group.title).to eq("System Group: My Contacts")
   end

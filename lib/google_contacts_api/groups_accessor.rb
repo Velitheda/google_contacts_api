@@ -23,5 +23,35 @@ module GoogleContactsApi
       end
       GoogleContactsApi::GroupSet.new(response.body, @api)
     end
+
+    def post_group(group)
+      params = {}
+      headers = {
+          'Content-type' => 'application/json'
+          }
+      body = group.json
+      params[:body] = body
+      url = "groups/default/full"
+      response = @api.post_v2(url, params, headers)
+      GoogleContactsApi::Api.parse_response_code(response)
+    end
+
+    def put_group(group)
+      params = {}
+      headers = {
+          'Content-type' => 'application/json'
+          }
+      body = group.json
+      params[:body] = body
+      response = @api.put_v2(group.edit_link, params, headers)
+      GoogleContactsApi::Api.parse_response_code(response)
+    end
+
+    def put_or_post(group)
+      code = put_group(group)
+      if code == 404
+        post_group(group)
+      end
+    end
   end
 end

@@ -1,3 +1,8 @@
+# require File.expand_path(File.dirname(__FILE__) + '../../spec_helper')
+
+# class MockOAuth2Error < StandardError
+# end
+
 describe "Api" do
     before(:each) do
       @oauth = double("oauth")
@@ -39,7 +44,7 @@ describe "Api" do
     describe ".put_v2" do
       it "should perform a put request using oauth" do
         expect(@oauth).to receive(:put).with(
-           GoogleContactsApi::Api::BASE_URL + "any_url?alt=json&param=param&v=3", {"header" => "header"})
+           "any_url?alt=json&param=param&v=3", {"header" => "header"})
         expect(@api.put_v2("any_url",
           {"param" => "param"},
           {"header" => "header"})).to eq("put response")

@@ -58,22 +58,16 @@ describe GoogleContactsApi::User do
     end
 
     describe ".save_contact" do
-      xit "should try to put the contact if it exists" do
-
-      end
-
-      xit "should post the contact if it doesn't exist" do
-
+      it "should save the contact" do
+        expect(user).to receive(:put_or_post_contact).and_return("success")
+        expect(user.save_contact(contact_json_hash)).to eq("success")
       end
     end
 
     describe ".save_group" do
-      xit "should try to put the group if it exists" do
-
-      end
-
-      xit "should post the group if it doesn't exist" do
-
+      it "should save the group" do
+        expect(user).to receive(:put_or_post_group).and_return("success")
+        expect(user.save_group(group_json_hash)).to eq("success")
       end
     end
 

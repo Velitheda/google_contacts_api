@@ -25,5 +25,37 @@ module GoogleContactsApi
       end
       GoogleContactsApi::ContactSet.new(response.body, @api)
     end
+
+    def post_contact(contact)
+      params = {}
+      headers = {
+          'Content-type' => 'application/json'
+          }
+      body = contact.json
+      params[:body] = body
+      url = "contacts/default/full"
+      response = @api.post_v2(url, params, headers)
+      GoogleContactsApi::Api.parse_response_code(response)
+    end
+
+    def put_contact(contact)
+      params = {}
+      headers = {
+          'Content-type' => 'application/json',
+          'If-Match' => '*'
+          }
+      body = contact.json
+      params[:body] = body
+      response = @api.put_v2(contact.edit_link, params, headers)
+      GoogleContactsApi::Api.parse_response_code(response)
+    end
+
+    def put_or_post_contact(contact)
+      code = put_contact(contact)
+      if code == 404
+        post_contact(contact)
+      end
+    end
+
   end
 end

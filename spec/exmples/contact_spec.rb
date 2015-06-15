@@ -4,6 +4,10 @@
       @contact = GoogleContactsApi::Contact.new(@contact_json_hash)
     end
     # ok, these tests are kind of silly
+    # it "returns the number at the end of the id link" do
+    #   expect(@contact.id_number).to equal(0)
+    # end
+
     it "should return the right title" do
       expect(@contact.title).to eq("Contact 1")
     end
