@@ -72,7 +72,7 @@ module GoogleContactsApi
 
     # Returns all phone numbers for the contact
     def phone_numbers
-      slef["gd$phoneNumber"] ? self["gd$phoneNumber"].map { |e| e['$t'] } : []
+      self["gd$phoneNumber"] ? self["gd$phoneNumber"].map { |e| e['$t'] } : []
     end
 
     # Returns all email addresses for the contact

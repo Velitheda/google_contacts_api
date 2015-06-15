@@ -11,18 +11,15 @@ module GoogleContactsApi
     end
 
     # Return the contacts in this group and cache them.
-    def contacts(params = {})
-      # puts "api: #{@api}"
-      # puts "user: #{@user}"
-      # contacts in this group
+    def contacts!(params = {})
       @contacts ||= get_contacts({"group" => self.id}.merge(params))
     end
 
     # Return the contacts in this group, retrieving them again from the server.
-    def contacts!(params = {})
+    def contacts(params = {})
       # contacts in this group
       @contacts = nil
-      contacts
+      contacts!
     end
 
   end

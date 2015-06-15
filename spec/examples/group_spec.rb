@@ -6,9 +6,6 @@ describe GoogleContactsApi::Group do
     @group = GoogleContactsApi::Group.new(group_json_hash)
   end
   # ok, these tests are kind of silly
-  # it "returns the number at the end of the id link" do
-  #   expect(@group.id_number).to equal(6)
-  # end
 
   it "should return the right title" do
     expect(@group.title).to eq("System Group: My Contacts")
@@ -37,8 +34,8 @@ describe GoogleContactsApi::Group do
       expect(@group).to receive(:get_contacts).with(hash_including({"group" => "group id"})).and_return("contact set")
       expect(@group.contacts).to eq("contact set")
     end
-    it "should use the contact cache for subsequent access" do
-      expect(@group).to receive(:get_contacts).with(hash_including({"group" => "group id"})).and_return("contact set").once
+    it "should not use the contact cache for subsequent access" do
+      expect(@group).to receive(:get_contacts).with(hash_including({"group" => "group id"})).and_return("contact set").twice
       @group.contacts
       contacts = @group.contacts
       expect(contacts).to eq("contact set")
@@ -55,8 +52,8 @@ describe GoogleContactsApi::Group do
       expect(@group.contacts!).to eq("contact set")
     end
     it "should use the contact cache for subsequent access" do
-      expect(@group).to receive(:get_contacts).with(hash_including({"group" => "group id"})).and_return("contact set").twice
-      @group.contacts
+      expect(@group).to receive(:get_contacts).with(hash_including({"group" => "group id"})).and_return("contact set").once
+      @group.contacts!
       contacts = @group.contacts!
       expect(contacts).to eq("contact set")
     end

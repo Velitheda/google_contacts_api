@@ -9,27 +9,27 @@ module GoogleContactsApi
     end
 
     # Return the contacts for this user and cache them.
-    def contacts(params = {})
+    def contacts!(params = {})
       # contacts in this group
       @contacts ||= get_contacts(params)
     end
 
     # Return the contacts for this user, retrieving them again from the server.
-    def contacts!(params = {})
+    def contacts(params = {})
       # contacts in this group
       @contacts = nil
-      contacts(params)
+      contacts!(params)
     end
 
     # Return the groups for this user and cache them.
-    def groups(params = {})
+    def groups!(params = {})
       @groups ||= get_groups(params)
     end
 
     # Return the groups for this user, retrieving them again from the server.
-    def groups!(params = {})
+    def groups(params = {})
       @groups = nil
-      groups(params)
+      groups!(params)
     end
 
     def save_contact(json)
