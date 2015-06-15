@@ -34,22 +34,24 @@ describe "Api" do
     describe ".post_v2" do
       it "should perform a post request using oauth" do
         expect(@oauth).to receive(:post).with(
-           GoogleContactsApi::Api::BASE_URL + "any_url?alt=json&param=param&v=3", {"header" => "header"})
+           GoogleContactsApi::Api::BASE_URL + "any_url", {"header" => "header"})
         expect(@api.post_v2("any_url",
-          {"param" => "param"},
+          {"param" => "body"},
           {"header" => "header"})).to eq("post response")
       end
     end
+    #?alt=json&param=param&v=3
 
     describe ".put_v2" do
       it "should perform a put request using oauth" do
         expect(@oauth).to receive(:put).with(
-           "any_url?alt=json&param=param&v=3", {"header" => "header"})
+           "any_url", {"header" => "header"})
         expect(@api.put_v2("any_url",
           {"param" => "param"},
           {"header" => "header"})).to eq("put response")
       end
     end
+    #?alt=json&param=param&v=3
 
     pending "should perform a delete request using oauth"
     # Not sure how to test, you'd need a revoked token.

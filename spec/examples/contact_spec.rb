@@ -17,6 +17,7 @@
     it "should return the right content" do
       # TODO: Nothing in source, oops
       expect(@contact.content).to eq(nil)
+      fail
     end
     it "should return the right updated time" do
       # different representation slightly
@@ -34,6 +35,7 @@
     it "should return the right edit photo link" do
       # TODO: there isn't one in this contact, hahah
       expect(@contact.edit_photo_link).to eq(nil)
+      fail
     end
     it "should try to fetch a photo" do
       @oauth = double("oauth")
@@ -46,7 +48,7 @@
       allow(@api).to receive(:oauth).and_return(@oauth)
       @contact = GoogleContactsApi::Contact.new(@contact_json_hash, nil, @api)
       expect(@oauth).to receive("get").with(@contact.photo_link)
-      @contact.photo
+      @contact.fetch_photo
     end
     # TODO: there isn't any phone number in here
     pending "should return all phone numbers"

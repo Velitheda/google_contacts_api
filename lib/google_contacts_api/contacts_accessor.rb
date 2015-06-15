@@ -27,12 +27,10 @@ module GoogleContactsApi
     end
 
     def post_contact(contact)
-      params = {}
+      params[:body] = contact.json
       headers = {
-          'Content-type' => 'application/json'
-          }
-      body = contact.json
-      params[:body] = body
+        'Content-type' => 'application/json'
+      }
       url = "contacts/default/full"
       response = @api.post_v2(url, params, headers)
       GoogleContactsApi::Api.parse_response_code(response)
@@ -41,9 +39,9 @@ module GoogleContactsApi
     def put_contact(contact)
       params = {}
       headers = {
-          'Content-type' => 'application/json',
-          'If-Match' => '*'
-          }
+        'Content-type' => 'application/json',
+        'If-Match' => '*'
+      }
       body = contact.json
       params[:body] = body
       response = @api.put_v2(contact.edit_link, params, headers)

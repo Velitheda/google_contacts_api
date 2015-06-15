@@ -48,7 +48,7 @@ module GoogleContactsApi
 
     # Returns binary data for the photo. You can probably
     # use it in a data-uri. This is in PNG format.
-    def photo
+    def fetch_photo
       return nil unless @api && photo_link
       response = @api.oauth.get(photo_link)
 

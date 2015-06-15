@@ -23,26 +23,30 @@ module GoogleContactsApi
     def get(link, params = {}, headers = {})
       merged_params = params_with_defaults(params)
       begin
-        result = @oauth.get("#{BASE_URL}#{link}?#{merged_params.to_query}", headers)
+        result = @oauth.get("#{BASE_URL}#{link}?#{merged_params.to_query}",
+          headers)
       rescue => e
         # TODO: OAuth 2.0 will raise a real error
-        raise UnauthorizedError if defined?(e.response) && self.class.parse_response_code(e.response) == 401
+        raise UnauthorizedError if self.class.parse_response_code(e.response) == 401
         raise e
       end
+      # if defined?(e.response)&&
 
       # OAuth 1.0 uses Net::HTTP internally
       raise UnauthorizedError if result.is_a?(Net::HTTPUnauthorized)
       result
     end
 
-    # these two methods will replace my previous two, but they aren't wired up to
-    # the rest of the code yet
+    # these two methods will replace my previous two, but they aren't wired up
+    # to the rest of the code yet
     # Post request to specified link, with query params
     def post_v2(link, params = {}, headers = {})
+      params[:headers] = headers
       merged_params = params_with_defaults(params)
-      uri = "#{BASE_URL}#{link}?#{merged_params.to_query}"
+      uri = "#{BASE_URL}#{link}"
+
       begin
-        response = @oauth.post(uri, headers)
+        response = @oauth.post(uri, merged_params)
       rescue => e
         raise UnauthorizedError if defined?(e.response) && self.class.parse_response_code(e.response) == 401
         raise e
@@ -53,9 +57,8 @@ module GoogleContactsApi
     def put_v2(link, params = {}, headers = {})
       # Doesn't handle id yet
       merged_params = params_with_defaults(params)
-      uri = "#{link}?#{merged_params.to_query}"
       begin
-        response = @oauth.put(uri, headers)
+        response = @oauth.put(link, headers)
       rescue => e
         raise UnauthorizedError if defined?(e.response) && self.class.parse_response_code(e.response) == 401
         raise e
@@ -66,7 +69,7 @@ module GoogleContactsApi
       options ={
         headers: {
           'Content-type' => 'application/json'
-          },
+        },
         body: contact.entry_json
       }
       merged_params = params_with_defaults(options)
@@ -81,7 +84,7 @@ module GoogleContactsApi
         headers: {
           'Content-type' => 'application/json',
           'If-Match' => '*'
-          },
+        },
         body: contact.entry_json
       }
       merged_params = params_with_defaults(options)
@@ -90,7 +93,11 @@ module GoogleContactsApi
       begin
         response = @oauth.put(uri, merged_params)
       rescue => e
-        GoogleContactsApi::Api.parse_response_code(e.response)
+        if
+          GoogleContactsApi::Api.parse_response_code(e.response)
+        else
+          throw e
+        end
       end
     end
 
@@ -98,7 +105,7 @@ module GoogleContactsApi
       options ={
         headers: {
           'Content-type' => 'application/json'
-          },
+        },
         body: group.entry_json
       }
       merged_params = params_with_defaults(options)
@@ -112,7 +119,7 @@ module GoogleContactsApi
         headers: {
           'Content-type' => 'application/json',
           'If-Match' => '*'
-          },
+        },
         body: group.entry_json
       }
       merged_params = params_with_defaults(options)

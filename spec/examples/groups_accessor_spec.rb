@@ -8,7 +8,7 @@ describe GoogleContactsApi::GroupsAccessor do
   end
 
   let(:api) { double("api") }
-  let(:test_class) {
+  let(:stubbed_contacts_accessor_class) {
     Class.new do
        include GoogleContactsApi::GroupsAccessor
       def initialize(api)
@@ -23,7 +23,7 @@ describe GoogleContactsApi::GroupsAccessor do
         "code" => 200
       }))
       allow(GoogleContactsApi::GroupSet).to receive(:new).and_return("group set")
-      expect(test_class.new(api).get_groups).to eq("group set")
+      expect(stubbed_contacts_accessor_class.new(api).get_groups).to eq("group set")
     end
   end
 
@@ -33,7 +33,7 @@ describe GoogleContactsApi::GroupsAccessor do
           "body" => "some response",
           "code" => 201
         }))
-        expect(test_class.new(api).post_group(@group)).to eq(201)
+        expect(stubbed_contacts_accessor_class.new(api).post_group(@group)).to eq(201)
       end
     end
 
@@ -43,22 +43,22 @@ describe GoogleContactsApi::GroupsAccessor do
           "body" => "some response",
           "code" => 201
         }))
-        expect(test_class.new(api).put_group(@group)).to eq(201)
+        expect(stubbed_contacts_accessor_class.new(api).put_group(@group)).to eq(201)
       end
     end
 
     describe ".put_or_post" do
       it "should put the group when it exists" do
-        tc = test_class.new(@api)
-        expect(tc).to receive(:put_group).with(@group).and_return(201)
-        expect(tc.put_or_post(@group))
+        stubbed_contacts_accessor = stubbed_contacts_accessor_class.new(@api)
+        expect(stubbed_contacts_accessor).to receive(:put_group).with(@group).and_return(201)
+        expect(stubbed_contacts_accessor.put_or_post(@group))
       end
 
       it "should post the group when it doesn't exist" do
-        tc = test_class.new(@api)
-        expect(tc).to receive(:put_group).with(@group).and_return(404)
-        expect(tc).to receive(:post_group).with(@group).and_return(201)
-        expect(tc.put_or_post(@group))
+        stubbed_contacts_accessor = stubbed_contacts_accessor_class.new(@api)
+        expect(stubbed_contacts_accessor).to receive(:put_group).with(@group).and_return(404)
+        expect(stubbed_contacts_accessor).to receive(:post_group).with(@group).and_return(201)
+        expect(stubbed_contacts_accessor.put_or_post(@group))
       end
     end
 
