@@ -38,15 +38,6 @@ module GoogleContactsApi
     def etag
     end
 
-    # def id_number
-    #   id_string = id
-    #   # match = id_string.match()
-    #   # puts match
-    #   # number = id_string.gsub(match, "")
-    #   id_string.sub!(/http:\/\/www.google.com\/m8\/feeds\/contacts\/.*\/base\//, "")
-    #   puts id_string
-    # end
-
     def id
       _id = self["id"]
       _id ? _id["$t"] : nil

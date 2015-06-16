@@ -34,7 +34,8 @@ module GoogleContactsApi
     end
 
     def inspect #:nodoc:
-      "<#{self.class}: @start_index=#{@start_index}, @items_per_page=#{@items_per_page}, @total_results=#{@total_results}>"
+      "<#{self.class}: @start_index=#{@start_index},
+        @items_per_page=#{@items_per_page}, @total_results=#{@total_results}>"
     end
 
   end

@@ -18,7 +18,9 @@ describe 'Contacts API v3 fields' do
         {
           "rel" => "http://schemas.google.com/g/2005#work",
           'gd$country' => { '$t' => 'United States of America' },
-          'gd$formattedAddress' => { '$t' => "2345 Long Dr. #232\nSomwhere\nIL\n12345\nUnited States of America" },
+          'gd$formattedAddress' => {
+            '$t' => "2345 Long Dr. #232\nSomwhere\nIL\n12345\n" \
+            "United States of America" },
           'gd$city' => { '$t' => 'Somwhere' },
           'gd$street' => { '$t' => '2345 Long Dr. #232' },
           'gd$region' => { '$t' => 'IL' },
@@ -27,7 +29,8 @@ describe 'Contacts API v3 fields' do
         {
           'rel' => 'http://schemas.google.com/g/2005#home',
           'gd$country' => { '$t' => 'United States of America' },
-          'gd$formattedAddress' => { '$t' => "123 Far Ln.\nAnywhere\nMO\n67891\nUnited States of America" },
+          'gd$formattedAddress' => { '$t' => "123 Far Ln.\nAnywhere\nMO\n" \
+            "67891\nUnited States of America" },
           'gd$city' => { '$t' => 'Anywhere' },
           'gd$street' => { '$t' => '123 Far Ln.' },
           'gd$region' => { '$t' => 'MO' },
@@ -53,29 +56,36 @@ describe 'Contacts API v3 fields' do
 
   it 'should catch nil values for nested fields' do
     expect(@empty.nested_t_field_or_nil('gd$name', 'gd$givenName')).to be_nil
-    expect(@partly_empty.nested_t_field_or_nil('gd$name', 'gd$givenName')).to be_nil
-    expect(@contact_v3.nested_t_field_or_nil('gd$name', 'gd$givenName')).to eq('John')
+    expect(@partly_empty.nested_t_field_or_nil('gd$name', 'gd$givenName')).
+      to be_nil
+    expect(@contact_v3.nested_t_field_or_nil('gd$name', 'gd$givenName')).
+      to eq('John')
   end
 
   it 'has given_name' do
-    expect(@contact_v3).to receive(:nested_t_field_or_nil).with('gd$name', 'gd$givenName').and_return('val')
+    expect(@contact_v3).to receive(:nested_t_field_or_nil)
+      .with('gd$name', 'gd$givenName').and_return('val')
     expect(@contact_v3.given_name).to eq('val')
   end
 
   it 'has family_name' do
-    expect(@contact_v3).to receive(:nested_t_field_or_nil).with('gd$name', 'gd$familyName').and_return('val')
+    expect(@contact_v3).to receive(:nested_t_field_or_nil).with('gd$name',
+      'gd$familyName').and_return('val')
     expect(@contact_v3.family_name).to eq('val')
   end
 
   it 'has full_name' do
-    expect(@contact_v3).to receive(:nested_t_field_or_nil).with('gd$name', 'gd$fullName').and_return('val')
+    expect(@contact_v3).to receive(:nested_t_field_or_nil).with('gd$name',
+      'gd$fullName').and_return('val')
     expect(@contact_v3.full_name).to eq('val')
   end
 
   it 'has relations' do
     expect(@empty.relations).to eq([])
     expect(@partly_empty.relations).to eq([])
-    expect(@contact_v3.relations).to eq([ { '$t' => 'Jane', 'rel' => 'spouse' } ])
+    expect(@contact_v3.relations).to eq([
+     { '$t' => 'Jane', 'rel' => 'spouse' }
+    ])
   end
   it 'has spouse' do
     expect(@empty.spouse).to be_nil
@@ -90,7 +100,8 @@ describe 'Contacts API v3 fields' do
       {
           :rel => 'work',
           :country => 'United States of America',
-          :formatted_address => "2345 Long Dr. #232\nSomwhere\nIL\n12345\nUnited States of America",
+          :formatted_address => "2345 Long Dr. #232\nSomwhere\nIL\n12345\n" \
+            "United States of America",
           :city => 'Somwhere',
           :street => '2345 Long Dr. #232',
           :region => 'IL',
@@ -99,7 +110,8 @@ describe 'Contacts API v3 fields' do
       {
           :rel => 'home',
           :country => 'United States of America',
-          :formatted_address => "123 Far Ln.\nAnywhere\nMO\n67891\nUnited States of America",
+          :formatted_address => "123 Far Ln.\nAnywhere\nMO\n67891\n" \
+            "United States of America",
           :city => 'Anywhere',
           :street => '123 Far Ln.',
           :region => 'MO',
@@ -111,10 +123,12 @@ describe 'Contacts API v3 fields' do
 
   it 'has full phone numbers' do
     expect(@empty.phone_numbers_full).to eq([])
-    expect(@contact_v3.phone_numbers_full).to eq([ { :primary => true, :number => '(123) 334-5158', :rel => 'mobile' } ])
+    expect(@contact_v3.phone_numbers_full).to eq([ { :primary => true,
+      :number => '(123) 334-5158', :rel => 'mobile' } ])
   end
   it 'has full emails' do
     expect(@empty.emails_full).to eq([])
-    expect(@contact_v3.emails_full).to eq([ { :primary => true, :address => 'johnsmith@example.com', :rel => 'other' } ])
+    expect(@contact_v3.emails_full).to eq([ { :primary => true,
+      :address => 'johnsmith@example.com', :rel => 'other' } ])
   end
 end

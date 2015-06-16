@@ -20,12 +20,14 @@ describe "ContactSet" do
         expect(@contact_set.has_more?).to eq(true)
       end
       it "should parse results into Contacts" do
-        expect(@contact_set.to_a.first).to be_instance_of(GoogleContactsApi::Contact)
+        expect(@contact_set.to_a.first).to be_instance_of(
+          GoogleContactsApi::Contact)
       end
     end
     it "should parse nil results into an empty array" do
       @empty_contact_set_json = empty_contact_set_json
-      @empty_contact_set = GoogleContactsApi::ContactSet.new(@empty_contact_set_json)
+      @empty_contact_set = GoogleContactsApi::ContactSet.new(
+        @empty_contact_set_json)
       expect(@empty_contact_set.total_results).to eq(0)
       expect(@empty_contact_set.instance_variable_get("@results")).to eq([])
     end

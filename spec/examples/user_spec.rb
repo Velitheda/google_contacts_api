@@ -18,7 +18,9 @@ describe GoogleContactsApi::User do
         expect(user.groups).to eq("group set")
       end
       it "should pass query params along to get_groups" do
-        expect(user).to receive(:get_groups).with("something" => "important").and_return("group set")
+        expect(user).to receive(:get_groups).with(
+          "something" => "important"
+          ).and_return("group set")
         expect(user.groups("something" => "important")).to eq("group set")
       end
       it "should reload the groups" do
@@ -46,7 +48,9 @@ describe GoogleContactsApi::User do
         expect(user.contacts).to eq("contact set")
       end
       it "should pass query params along to get_contacts" do
-        expect(user).to receive(:get_contacts).with("something" => "important").and_return("contact set")
+        expect(user).to receive(:get_contacts).with(
+          "something" => "important"
+        ).and_return("contact set")
         expect(user.contacts("something" => "important")).to eq("contact set")
       end
       it "should reload the contacts" do

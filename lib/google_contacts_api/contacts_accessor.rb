@@ -8,8 +8,8 @@ module GoogleContactsApi
       params = params.with_indifferent_access
 
       # compose params into a string
-      # See http://code.google.com/apis/contacts/docs/3.0/reference.html#Parameters
-      # alt, q, max-results, start-index, updated-min,
+      # See http://code.google.com/apis/contacts/docs/3.0/reference.html
+      #Parameters: alt, q, max-results, start-index, updated-min,
       # orderby, showdeleted, requirealldeleted, sortorder, group
       params["max-results"] = 100000 unless params.key?("max-results")
       url = "contacts/default/full"

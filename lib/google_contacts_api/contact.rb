@@ -7,7 +7,8 @@ module GoogleContactsApi
 
     #this selects the first address in list we have
     def primary_address
-      value = first_value_for_key_in_collection(self["gd$structuredPostalAddress"], "gd$formattedAddress")
+      value = first_value_for_key_in_collection(
+        self["gd$structuredPostalAddress"], "gd$formattedAddress")
       value_at_dollar_t(value)
     end
 
@@ -16,12 +17,14 @@ module GoogleContactsApi
     end
 
     def organization
-      value = first_value_for_key_in_collection(self["gd$organization"], "gd$orgName")
+      value = first_value_for_key_in_collection(
+        self["gd$organization"], "gd$orgName")
       value_at_dollar_t(value)
     end
 
     def job_title
-      value = first_value_for_key_in_collection(self["gd$organization"], "gd$orgTitle")
+      value = first_value_for_key_in_collection(
+        self["gd$organization"], "gd$orgTitle")
       value_at_dollar_t(value)
     end
 
@@ -135,7 +138,8 @@ module GoogleContactsApi
 
     # Return an Array of Hashes representing addresses with formatted metadata.
     def addresses
-      self['gd$structuredPostalAddress'] ? self['gd$structuredPostalAddress'].map(&method(:format_address)) : []
+      self['gd$structuredPostalAddress'] ? self['gd$structuredPostalAddress'].
+        map(&method(:format_address)) : []
     end
 
     # Return an Array of Hashes representing phone numbers with formatted metadata.
@@ -173,7 +177,8 @@ module GoogleContactsApi
       rel = unformatted[:rel]
       formatted[:rel] = rel.gsub('http://schemas.google.com/g/2005#', '')
       formatted[:country] = value_at_dollar_t(unformatted["gd$country"])
-      formatted[:formatted_address] = value_at_dollar_t(unformatted["gd$formattedAddress"])
+      formatted[:formatted_address] = value_at_dollar_t(
+        unformatted["gd$formattedAddress"])
       formatted[:city] = value_at_dollar_t(unformatted["gd$city"])
       formatted[:street] = value_at_dollar_t(unformatted["gd$street"])
       formatted[:region] = value_at_dollar_t(unformatted["gd$region"])

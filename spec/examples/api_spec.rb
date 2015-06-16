@@ -1,8 +1,3 @@
-# require File.expand_path(File.dirname(__FILE__) + '../../spec_helper')
-
-# class MockOAuth2Error < StandardError
-# end
-
 describe "Api" do
     before(:each) do
       @oauth = double("oauth")
@@ -13,18 +8,20 @@ describe "Api" do
     end
 
     describe ".get" do
-      it "should perform a get request using oauth returning json with version 3" do
+      it "performs a get request using oauth returning json with version 3" do
         # expectation should come before execution
         expect(@oauth).to receive(:get).with(
-          GoogleContactsApi::Api::BASE_URL + "any_url?alt=json&param=param&v=3", {"header" => "header"})
+          GoogleContactsApi::Api::BASE_URL + "any_url?alt=json&param=param&v=3",
+          {"header" => "header"})
         expect(@api.get("any_url",
           {"param" => "param"},
           {"header" => "header"})).to eq("get response")
       end
 
-      it "should perform a get request using oauth with the version specified" do
+      it "should perform a get request using oauth with version specified" do
         expect(@oauth).to receive(:get).with(
-          GoogleContactsApi::Api::BASE_URL + "any_url?alt=json&param=param&v=2", {"header" => "header"})
+          GoogleContactsApi::Api::BASE_URL + "any_url?alt=json&param=param&v=2",
+            {"header" => "header"})
         expect(@api.get("any_url",
           {"param" => "param", "v" => "2"},
           {"header" => "header"})).to eq("get response")
@@ -58,21 +55,25 @@ describe "Api" do
     it "should raise UnauthorizedError if OAuth 1.0 returns unauthorized" do
       oauth = double("oauth")
       error_html = load_file(File.join('errors', 'auth_sub_401.html'))
-      allow(oauth).to receive(:get).and_return(Net::HTTPUnauthorized.new("1.1", 401, error_html))
+      allow(oauth).to receive(:get).and_return(
+        Net::HTTPUnauthorized.new("1.1", 401, error_html))
       api = GoogleContactsApi::Api.new(oauth)
       expect { api.get("any url",
         {"param" => "param"},
-        {"header" => "header"}) }.to raise_error(GoogleContactsApi::UnauthorizedError)
+        {"header" => "header"})
+      }.to raise_error(GoogleContactsApi::UnauthorizedError)
     end
 
     it "should raise UnauthorizedError if OAuth 2.0 returns unauthorized" do
       oauth = double("oauth2")
       oauth2_response = Struct.new(:status)
-      allow(oauth).to receive(:get).and_raise(MockOAuth2Error.new(oauth2_response.new(401)))
+      allow(oauth).to receive(:get).and_raise(
+        MockOAuth2Error.new(oauth2_response.new(401)))
       api = GoogleContactsApi::Api.new(oauth)
       expect { api.get("any url",
         {"param" => "param"},
-        {"header" => "header"}) }.to raise_error(GoogleContactsApi::UnauthorizedError)
+        {"header" => "header"})
+      }.to raise_error(GoogleContactsApi::UnauthorizedError)
     end
 
     describe "parsing response code" do
@@ -81,11 +82,13 @@ describe "Api" do
         @Oauth2 = Struct.new(:status)
       end
       it "should parse something that looks like an oauth gem response" do
-        expect(GoogleContactsApi::Api.parse_response_code(@Oauth.new("401"))).to eq(401)
+        expect(GoogleContactsApi::Api.parse_response_code(
+          @Oauth.new("401"))).to eq(401)
       end
 
       it "should parse something that looks like an oauth2 gem response" do
-        expect(GoogleContactsApi::Api.parse_response_code(@Oauth2.new(401))).to eq(401)
+        expect(GoogleContactsApi::Api.parse_response_code(
+          @Oauth2.new(401))).to eq(401)
       end
     end
   end

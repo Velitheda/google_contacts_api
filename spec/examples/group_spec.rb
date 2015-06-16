@@ -11,7 +11,8 @@ describe GoogleContactsApi::Group do
     expect(@group.title).to eq("System Group: My Contacts")
   end
   it "should return the right id" do
-    expect(@group.id).to eq("http://www.google.com/m8/feeds/groups/example%40gmail.com/base/6")
+    expect(@group.id).to eq(
+      "http://www.google.com/m8/feeds/groups/example%40gmail.com/base/6")
   end
   it "should return the right content" do
     # TODO: Nothing in source, oops
@@ -31,11 +32,13 @@ describe GoogleContactsApi::Group do
       allow(@group).to receive(:id).and_return("group id")
     end
     it "should be able to get contacts" do
-      expect(@group).to receive(:get_contacts).with(hash_including({"group" => "group id"})).and_return("contact set")
+      expect(@group).to receive(:get_contacts).with(
+        hash_including({"group" => "group id"})).and_return("contact set")
       expect(@group.contacts).to eq("contact set")
     end
     it "should not use the contact cache for subsequent access" do
-      expect(@group).to receive(:get_contacts).with(hash_including({"group" => "group id"})).and_return("contact set").twice
+      expect(@group).to receive(:get_contacts).with(
+        hash_including({"group" => "group id"})).and_return("contact set").twice
       @group.contacts
       contacts = @group.contacts
       expect(contacts).to eq("contact set")
@@ -48,11 +51,13 @@ describe GoogleContactsApi::Group do
       allow(@group).to receive(:id).and_return("group id")
     end
     it "should be able to get contacts" do
-      expect(@group).to receive(:get_contacts).with(hash_including({"group" => "group id"})).and_return("contact set")
+      expect(@group).to receive(:get_contacts).with(
+        hash_including({"group" => "group id"})).and_return("contact set")
       expect(@group.contacts!).to eq("contact set")
     end
     it "should use the contact cache for subsequent access" do
-      expect(@group).to receive(:get_contacts).with(hash_including({"group" => "group id"})).and_return("contact set").once
+      expect(@group).to receive(:get_contacts).with(
+        hash_including({"group" => "group id"})).and_return("contact set").once
       @group.contacts!
       contacts = @group.contacts!
       expect(contacts).to eq("contact set")

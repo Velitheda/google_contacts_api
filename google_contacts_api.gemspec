@@ -10,7 +10,8 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Alvin Liang"]
   s.date = "2015-05-07"
-  s.description = "Lets you read from the Google Contacts API. Posting to come later."
+  s.description = "Lets you read from the Google Contacts API. \
+    Posting to come later."
   s.email = "ayliang@gmail.com"
   s.extra_rdoc_files = [
     "LICENSE.txt",
