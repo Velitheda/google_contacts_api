@@ -27,7 +27,8 @@ module GoogleContactsApi
           headers)
       rescue => e
         # TODO: OAuth 2.0 will raise a real error
-        raise UnauthorizedError if self.class.parse_response_code(e.response) == 401
+        raise UnauthorizedError if e.response && self.class.parse_response_code(
+          e.response) == 401
         raise e
       end
       # if defined?(e.response)&&
@@ -48,7 +49,8 @@ module GoogleContactsApi
       begin
         response = @oauth.post(uri, merged_params)
       rescue => e
-        raise UnauthorizedError if defined?(e.response) && self.class.parse_response_code(e.response) == 401
+        raise UnauthorizedError if e.response && self.class.parse_response_code(
+          e.response) == 401
         raise e
       end
     end
@@ -60,7 +62,8 @@ module GoogleContactsApi
       begin
         response = @oauth.put(link, headers)
       rescue => e
-        raise UnauthorizedError if defined?(e.response) && self.class.parse_response_code(e.response) == 401
+        raise UnauthorizedError if e.response && self.class.parse_response_code(
+          e.response) == 401
         raise e
       end
     end
