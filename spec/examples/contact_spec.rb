@@ -44,7 +44,6 @@
         "body" => "some response", # could use example response here
         "code" => 200
       }))
-      # @api = GoogleContactsApi::Api.new(@oauth)
       @api = double("api")
       allow(@api).to receive(:oauth).and_return(@oauth)
       @contact = GoogleContactsApi::Contact.new(@contact_json_hash, nil, @api)

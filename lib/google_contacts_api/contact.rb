@@ -32,7 +32,7 @@ module GoogleContactsApi
 
     # def phone_number
     #   @phone_number
-    # end
+    # edit_photo_link
 
     # Returns alternative, possibly off-Google home page link
     def alternate_link

@@ -2,6 +2,9 @@
 module GoogleContactsApi
   module ContactsAccessor
     # Retrieve the contacts for this user or group
+
+    CONTACT_RELATIVE_URL = "contacts/default/full"
+
     def get_contacts(params = {})
       # TODO: Should return empty ContactSet (haven't implemented one yet)
       return [] unless @api
@@ -12,7 +15,7 @@ module GoogleContactsApi
       #Parameters: alt, q, max-results, start-index, updated-min,
       # orderby, showdeleted, requirealldeleted, sortorder, group
       params["max-results"] = 100000 unless params.key?("max-results")
-      url = "contacts/default/full"
+      url = CONTACT_RELATIVE_URL
       response = @api.get(url, params)
 
       # TODO: Define some fancy exceptions
@@ -31,7 +34,7 @@ module GoogleContactsApi
       headers = {
         'Content-type' => 'application/json'
       }
-      url = "contacts/default/full"
+      url = CONTACT_RELATIVE_URL
       response = @api.post_v2(url, params, headers)
       GoogleContactsApi::Api.parse_response_code(response)
     end
@@ -43,6 +46,8 @@ module GoogleContactsApi
         'If-Match' => '*'
       }
       body = contact.json
+      link = CONTACT_RELATIVE_URL + contact.edit_link[/\/(([a-z]|[0-9])+)$/]
+      puts "link: #{link}"
       params[:body] = body
       response = @api.put_v2(contact.edit_link, params, headers)
       GoogleContactsApi::Api.parse_response_code(response)
