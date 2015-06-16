@@ -5,7 +5,12 @@ module GoogleContactsApi
   # In the JSON responses, ":" from the equivalent XML response is replaced
   # with a "$", while element content is instead keyed with "$t".
   class Result < Hashie::Mash
-    attr_reader :api, :json
+    attr_reader :api
+
+    # this stores the json in an untouched form for eaisily
+    # sending back to Google
+    attr_reader :json
+
     # Initialize a Result from a single result's Hash/Hashie
     def initialize(source_hash = nil, default = nil, api = nil, &blk)
       @api = api if api

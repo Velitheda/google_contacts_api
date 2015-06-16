@@ -3,8 +3,6 @@ module GoogleContactsApi
   # Represents a single contact.
   class Contact < GoogleContactsApi::Result
 
-    attr_reader :json, :original_contact
-
     # This selects the first address in list we have
     def primary_address
       value = first_value_for_key_in_collection(
@@ -28,13 +26,13 @@ module GoogleContactsApi
       value_at_dollar_t(value)
     end
 
-    def mobile_number
-      @mobile_number
-    end
+    # def mobile_number
+    #   @mobile_number
+    # end
 
-    def phone_number
-      @phone_number
-    end
+    # def phone_number
+    #   @phone_number
+    # end
 
     # Returns alternative, possibly off-Google home page link
     def alternate_link
