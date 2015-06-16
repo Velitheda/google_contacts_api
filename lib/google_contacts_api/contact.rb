@@ -5,7 +5,7 @@ module GoogleContactsApi
 
     attr_reader :json, :original_contact
 
-    #this selects the first address in list we have
+    # This selects the first address in list we have
     def primary_address
       value = first_value_for_key_in_collection(
         self["gd$structuredPostalAddress"], "gd$formattedAddress")
@@ -45,7 +45,8 @@ module GoogleContactsApi
     # Returns link for photo
     # (still need authentication to get the photo data, though)
     def photo_link
-      _link = self["link"].find { |l| l.rel == "http://schemas.google.com/contacts/2008/rel#photo" }
+      _link = self["link"].find { |l| l.rel ==
+        "http://schemas.google.com/contacts/2008/rel#photo" }
       _link ? _link.href : nil
     end
 
@@ -69,7 +70,8 @@ module GoogleContactsApi
 
     # Returns link to add/replace the photo
     def edit_photo_link
-      _link = self["link"].find { |l| l.rel == "http://schemas.google.com/contacts/2008/rel#edit_photo" }
+      _link = self["link"].find { |l| l.rel ==
+        "http://schemas.google.com/contacts/2008/rel#edit_photo" }
       _link ? _link.href : nil
     end
 
@@ -142,9 +144,14 @@ module GoogleContactsApi
         map(&method(:format_address)) : []
     end
 
-    # Return an Array of Hashes representing phone numbers with formatted metadata.
+    # Return an Array of Hashes representing phone numbers
+    # with formatted metadata.
     def phone_numbers_full
-      self["gd$phoneNumber"] ? self["gd$phoneNumber"].map(&method(:format_number)) : []
+      if self["gd$phoneNumber"]
+        self["gd$phoneNumber"].map(&method(:format_number))
+      else
+        []
+      end
     end
 
     # Return an Array of Hashes representing emails with formatted metadata.
@@ -157,7 +164,11 @@ module GoogleContactsApi
     def format_email(unformatted)
       formatted = {}
       rel = unformatted[:rel]
-      unformatted["primary"] ? formatted[:primary] = true : formatted[:primary] = false
+      if unformatted["primary"]
+        formatted[:primary] = true
+      else
+        formatted[:primary] = false
+      end
       formatted[:address] = unformatted["address"]
       formatted[:rel] = rel.gsub('http://schemas.google.com/g/2005#', '')
       formatted
@@ -165,7 +176,11 @@ module GoogleContactsApi
 
     def format_number(unformatted)
       formatted = {}
-      unformatted["primary"] ? formatted[:primary] = true : formatted[:primary] = false
+      if unformatted["primary"]
+        formatted[:primary] = true
+      else
+        formatted[:primary] = false
+      end
       formatted[:number] = value_at_dollar_t(unformatted)
       rel = unformatted[:rel]
       formatted[:rel] = rel.gsub('http://schemas.google.com/g/2005#', '')
