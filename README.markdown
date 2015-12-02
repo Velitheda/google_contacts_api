@@ -1,3 +1,9 @@
+This gem is forked from https://github.com/aliang/google_contacts_api
+
+It origally just fetched the Google Contacts, but I added capacity for it to format the contacts it gets, and also for it to restore any contacts given back to Google's servers.
+
+Origional ReadMe:
+
 # google_contacts_api
 
 An unofficial Google Contacts API for ruby. Might not be stable (but probably is).
