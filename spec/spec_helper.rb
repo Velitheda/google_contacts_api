@@ -23,15 +23,15 @@ def load_file(filename)
 end
 
 def contact_set_json
-  load_file("contact_set.json")
+  load_file("sample_data/contact_set.json")
 end
 
 def group_set_json
-  load_file("group_set.json")
+  load_file("sample_data/group_set.json")
 end
 
 def empty_contact_set_json
-  load_file("empty_contact_set.json")
+  load_file("sample_data/empty_contact_set.json")
 end
 
 def contact_json_hash

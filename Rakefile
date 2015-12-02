@@ -11,12 +11,14 @@ require 'rake'
 
 require 'jeweler'
 Jeweler::Tasks.new do |gem|
-  # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
+  # gem is a Gem::Specification...
+  # see http://docs.rubygems.org/read/chapter/20 for more options
   gem.name = "google_contacts_api"
   gem.homepage = "http://github.com/aliang/google_contacts_api"
   gem.license = "MIT"
   gem.summary = %Q{Lets you read from the Google Contacts API}
-  gem.description = %Q{Lets you read from the Google Contacts API. Posting to come later.}
+  gem.description = %Q{Lets you read from the Google Contacts API. \
+    Posting to come later.}
   gem.email = "ayliang@gmail.com"
   gem.authors = ["Alvin Liang"]
 end
@@ -43,4 +45,10 @@ RDoc::Task.new do |rdoc|
   rdoc.title = "google_contacts_api #{version}"
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
+end
+
+
+task :test do
+  $LOAD_PATH.unshift('lib', 'test')
+  Dir.glob('./test/**/*_test.rb') { |f| require f }
 end

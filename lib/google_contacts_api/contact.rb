@@ -1,20 +1,38 @@
 module GoogleContactsApi
+
   # Represents a single contact.
-  # Methods we could implement:
-  # :categories, (:content again), :links, (:title again), :email
-  # :extended_properties, :deleted, :im, :name,
-  # :organizations, :phone_numbers, :structured_postal_addresses, :where
   class Contact < GoogleContactsApi::Result
-    # Returns the array of links, as link is an array for Hashie.
-    def links
-      self["link"].map { |l| l.href }
+
+    # This selects the first address in list we have
+    def primary_address
+      value = first_value_for_key_in_collection(
+        self["gd$structuredPostalAddress"], "gd$formattedAddress")
+      value_at_dollar_t(value)
     end
 
-    # Returns link to get this contact
-    def self_link
-      _link = self["link"].find { |l| l.rel == "self" }
-      _link ? _link.href : nil
+    def website
+      first_value_for_key_in_collection(self["gContact$website"], "href")
     end
+
+    def organization
+      value = first_value_for_key_in_collection(
+        self["gd$organization"], "gd$orgName")
+      value_at_dollar_t(value)
+    end
+
+    def job_title
+      value = first_value_for_key_in_collection(
+        self["gd$organization"], "gd$orgTitle")
+      value_at_dollar_t(value)
+    end
+
+    # def mobile_number
+    #   @mobile_number
+    # end
+
+    # def phone_number
+    #   @phone_number
+    # edit_photo_link
 
     # Returns alternative, possibly off-Google home page link
     def alternate_link
@@ -25,13 +43,14 @@ module GoogleContactsApi
     # Returns link for photo
     # (still need authentication to get the photo data, though)
     def photo_link
-      _link = self["link"].find { |l| l.rel == "http://schemas.google.com/contacts/2008/rel#photo" }
+      _link = self["link"].find { |l| l.rel ==
+        "http://schemas.google.com/contacts/2008/rel#photo" }
       _link ? _link.href : nil
     end
 
     # Returns binary data for the photo. You can probably
     # use it in a data-uri. This is in PNG format.
-    def photo
+    def fetch_photo
       return nil unless @api && photo_link
       response = @api.oauth.get(photo_link)
 
@@ -49,13 +68,8 @@ module GoogleContactsApi
 
     # Returns link to add/replace the photo
     def edit_photo_link
-      _link = self["link"].find { |l| l.rel == "http://schemas.google.com/contacts/2008/rel#edit_photo" }
-      _link ? _link.href : nil
-    end
-
-    # Returns link to edit the contact
-    def edit_link
-      _link = self["link"].find { |l| l.rel == "edit" }
+      _link = self["link"].find { |l| l.rel ==
+        "http://schemas.google.com/contacts/2008/rel#edit_photo" }
       _link ? _link.href : nil
     end
 
@@ -91,6 +105,7 @@ module GoogleContactsApi
       if self[level1]
         self[level1][level2] ? self[level1][level2]['$t']: nil
       end
+
     end
     def given_name
       nested_t_field_or_nil 'gd$name', 'gd$givenName'
@@ -123,12 +138,18 @@ module GoogleContactsApi
 
     # Return an Array of Hashes representing addresses with formatted metadata.
     def addresses
-      self['gd$structuredPostalAddress'] ? self['gd$structuredPostalAddress'].map(&method(:format_address)) : []
+      self['gd$structuredPostalAddress'] ? self['gd$structuredPostalAddress'].
+        map(&method(:format_address)) : []
     end
 
-    # Return an Array of Hashes representing phone numbers with formatted metadata.
+    # Return an Array of Hashes representing phone numbers
+    # with formatted metadata.
     def phone_numbers_full
-      self["gd$phoneNumber"] ? self["gd$phoneNumber"].map(&method(:format_phone_number)) : []
+      if self["gd$phoneNumber"]
+        self["gd$phoneNumber"].map(&method(:format_number))
+      else
+        []
+      end
     end
 
     # Return an Array of Hashes representing emails with formatted metadata.
@@ -137,32 +158,46 @@ module GoogleContactsApi
     end
 
   private
+
+    def format_email(unformatted)
+      formatted = {}
+      rel = unformatted[:rel]
+      if unformatted["primary"]
+        formatted[:primary] = true
+      else
+        formatted[:primary] = false
+      end
+      formatted[:address] = unformatted["address"]
+      formatted[:rel] = rel.gsub('http://schemas.google.com/g/2005#', '')
+      formatted
+    end
+
+    def format_number(unformatted)
+      formatted = {}
+      if unformatted["primary"]
+        formatted[:primary] = true
+      else
+        formatted[:primary] = false
+      end
+      formatted[:number] = value_at_dollar_t(unformatted)
+      rel = unformatted[:rel]
+      formatted[:rel] = rel.gsub('http://schemas.google.com/g/2005#', '')
+      formatted
+    end
+
     def format_address(unformatted)
       formatted = {}
-      formatted[:rel] = unformatted['rel'] ? unformatted['rel'].gsub('http://schemas.google.com/g/2005#', '') : 'work'
-      unformatted.delete 'rel'
-      unformatted.each do |key, value|
-        formatted[key.sub('gd$', '').underscore.to_sym] = value['$t']
-      end
+      rel = unformatted[:rel]
+      formatted[:rel] = rel.gsub('http://schemas.google.com/g/2005#', '')
+      formatted[:country] = value_at_dollar_t(unformatted["gd$country"])
+      formatted[:formatted_address] = value_at_dollar_t(
+        unformatted["gd$formattedAddress"])
+      formatted[:city] = value_at_dollar_t(unformatted["gd$city"])
+      formatted[:street] = value_at_dollar_t(unformatted["gd$street"])
+      formatted[:region] = value_at_dollar_t(unformatted["gd$region"])
+      formatted[:postcode] = value_at_dollar_t(unformatted["gd$postcode"])
       formatted
     end
 
-    def format_email_or_phone(unformatted)
-      formatted = {}
-      unformatted.each do |key, value|
-        formatted[key.underscore.to_sym] = value ? value.gsub('http://schemas.google.com/g/2005#', '') : value
-      end
-      formatted[:primary] = unformatted['primary'] ? unformatted['primary'] == 'true' : false
-      formatted
-    end
-
-    def format_phone_number(unformatted)
-      unformatted[:number] = unformatted['$t']
-      unformatted.delete '$t'
-      format_email_or_phone unformatted
-    end
-    def format_email(unformatted)
-      format_email_or_phone unformatted
-    end
   end
 end
